@@ -34,12 +34,52 @@
   * {
     @apply border-border;
   }
+
   html {
     color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Improve default heading rhythm */
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+
+  /* Better default focus rings for keyboard nav */
+  :focus-visible {
+    @apply outline-none ring-2 ring-indigo-500/60 ring-offset-2 ring-offset-zinc-950;
+  }
+
+  /* Global scrollbar — subtle, premium feel */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.12);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: rgba(99, 102, 241, 0.35);
+    color: #fff;
   }
 }
 
@@ -52,9 +92,22 @@
   }
 
   .glass-hover {
-    @apply transition-all duration-300 hover:bg-white/[0.05] hover:border-white/[0.1];
+    @apply transition-all duration-200 hover:bg-white/[0.05] hover:border-white/[0.1];
   }
 
+  /* Subtle card lift on hover, used for interactive cards */
+  .card-hover {
+    @apply transition-all duration-200;
+  }
+  .card-hover:hover {
+    @apply border-white/[0.12] -translate-y-[2px];
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 24px 50px -20px rgba(99, 102, 241, 0.20),
+      0 12px 24px -12px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Gradient text — used for emphasis */
   .gradient-text {
     @apply bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent;
   }
@@ -95,6 +148,40 @@
     background: rgba(255, 255, 255, 0.08);
     border-radius: 3px;
   }
+
+  /* Loading skeleton (shimmer) */
+  .skeleton {
+    @apply relative overflow-hidden bg-white/[0.04] rounded-md;
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.06),
+      transparent
+    );
+    animation: shimmer 1.8s infinite;
+    transform: translateX(-100%);
+  }
+
+  /* Animated dot loader */
+  .dots-loader {
+    @apply inline-flex items-center gap-1;
+  }
+  .dots-loader > span {
+    @apply inline-block w-1.5 h-1.5 rounded-full bg-indigo-400;
+    animation: dots-bounce 1.4s infinite ease-in-out both;
+  }
+  .dots-loader > span:nth-child(1) { animation-delay: -0.32s; }
+  .dots-loader > span:nth-child(2) { animation-delay: -0.16s; }
+
+  /* Subtle entry animation for content */
+  .fade-up {
+    animation: fadeUp 0.35s ease-out both;
+  }
 }
 
 @layer utilities {
@@ -116,4 +203,34 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Numeric / tabular figures — for stat displays */
+  .tabular-numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes dots-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Animated chart appearance — recharts inherits */
+.recharts-surface {
+  overflow: visible;
+}
+
+/* Recharts tooltip default cleanup */
+.recharts-tooltip-wrapper {
+  outline: none !important;
 }

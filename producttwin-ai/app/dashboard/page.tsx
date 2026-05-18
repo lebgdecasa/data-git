@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { LinkedInDemoModal } from "@/components/dashboard/linkedin-demo-modal";
 import {
   Area,
   AreaChart,
@@ -29,7 +27,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Gauge,
-  Linkedin,
   Map,
   ShieldAlert,
   ShieldCheck,
@@ -272,12 +269,8 @@ const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any
 
 /* ─── PAGE ──────────────────────────────────── */
 export default function DashboardPage() {
-  const [demoOpen, setDemoOpen] = useState(false);
-
   return (
     <AppShell title="Product Dashboard" subtitle="Real-time health overview · HealthTrack AI">
-
-      <LinkedInDemoModal open={demoOpen} onClose={() => setDemoOpen(false)} />
 
       {/* ── PRODUCT IDENTITY HEADER ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-5 rounded-2xl glass">
@@ -316,14 +309,6 @@ export default function DashboardPage() {
               Prioritize Roadmap
             </Button>
           </Link>
-          <Button
-            size="sm"
-            onClick={() => setDemoOpen(true)}
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 shadow-lg shadow-indigo-500/20"
-          >
-            <Linkedin className="h-3.5 w-3.5" />
-            Generate LinkedIn Demo Summary
-          </Button>
         </div>
       </div>
 
