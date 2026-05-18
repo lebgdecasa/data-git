@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LinkedInDemoModal } from "@/components/dashboard/linkedin-demo-modal";
 import { Menu, Linkedin, Activity, Sparkle } from "lucide-react";
-import { useTwinStore } from "@/lib/store";
+import { useProfileStore, isProfilePopulated } from "@/lib/profile-store";
 
 export function Topbar({
   title,
@@ -18,7 +18,10 @@ export function Topbar({
   onMenuClick?: () => void;
 }) {
   const [demoOpen, setDemoOpen] = useState(false);
-  const { assumptions } = useTwinStore();
+  const profile = useProfileStore((s) => s.profile);
+  const populated = isProfilePopulated(profile);
+  const displayName = populated ? profile.productName : "No product loaded";
+  const displayStage = populated ? (profile.productType || "—") : "Empty profile";
 
   return (
     <>
@@ -53,9 +56,9 @@ export function Topbar({
               </span>
               <span className="font-medium">Live twin</span>
               <span className="opacity-30">·</span>
-              <span className="truncate text-zinc-400 font-medium">{assumptions.productName}</span>
-              <Badge variant="secondary" className="ml-1 capitalize text-[10px] px-2 py-0 h-4">
-                {assumptions.stage}
+              <span className="truncate text-zinc-400 font-medium">{displayName}</span>
+              <Badge variant="secondary" className="ml-1 text-[10px] px-2 py-0 h-4">
+                {displayStage}
               </Badge>
             </div>
             <h1 className="text-lg lg:text-xl font-semibold tracking-tight text-white leading-tight truncate">
