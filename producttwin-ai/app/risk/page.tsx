@@ -39,7 +39,7 @@ type RiskCat = {
   id: string;
   name: string;
   Icon: React.ElementType;
-  score: number; // readiness 0–100 (higher = better prepared)
+  score: number; // readiness 0-100 (higher = better prepared)
   iconBg: string;
   accentColor: string;
   explanation: string;
@@ -70,7 +70,7 @@ const RISKS: RiskCat[] = [
     iconBg: "bg-indigo-500/20",
     accentColor: "#6366f1",
     explanation:
-      "User health data is collected, stored, and processed with standard encryption. Consent flows exist but lack granularity — users cannot opt out of specific processing activities. No data residency guarantees are in place for non-US markets.",
+      "User health data is collected, stored, and processed with standard encryption. Consent flows exist but lack granularity - users cannot opt out of specific processing activities. No data residency guarantees are in place for non-US markets.",
     mitigation:
       "Implement a consent management platform (CMP) with per-category opt-outs. Add data residency configuration per market. Publish a privacy notice with explicit data lifecycle and deletion timelines.",
   },
@@ -94,7 +94,7 @@ const RISKS: RiskCat[] = [
     iconBg: "bg-emerald-500/20",
     accentColor: "#10b981",
     explanation:
-      "The AI recommendation engine uses deterministic, rule-based logic — reducing hallucination risk. Outputs are labeled as 'suggestions', not diagnoses. No A/B framework tracks recommendation quality over time. No human-review layer exists for high-stakes outputs.",
+      "The AI recommendation engine uses deterministic, rule-based logic - reducing hallucination risk. Outputs are labeled as 'suggestions', not diagnoses. No A/B framework tracks recommendation quality over time. No human-review layer exists for high-stakes outputs.",
     mitigation:
       "Display confidence intervals on AI outputs. Document decision logic for potential regulatory review. Implement feedback loops to detect drift. Add a human-review gate for any health recommendation classified as clinical in scope.",
   },
@@ -144,7 +144,7 @@ const RISKS: RiskCat[] = [
     explanation:
       "Operating in digital health creates simultaneous exposure to HIPAA (US health data), GDPR (EU users), EU AI Act (automated recommendations), and potential FDA SaMD classification if features expand into clinical advice. No regulatory mapping has been performed.",
     mitigation:
-      "Commission a regulatory mapping exercise across all target markets. Engage a healthcare regulatory attorney. Monitor EU AI Act enforcement (2025–2027 timeline). Determine FDA SaMD classification risk before expanding clinical use cases.",
+      "Commission a regulatory mapping exercise across all target markets. Engage a healthcare regulatory attorney. Monitor EU AI Act enforcement (2025-2027 timeline). Determine FDA SaMD classification risk before expanding clinical use cases.",
   },
   {
     id: "audit",
@@ -170,14 +170,14 @@ const FRAMEWORKS: Framework[] = [
     chipCls: "border-indigo-500/40 text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20",
     description: "EU regulation governing personal data collection, storage, and processing for EU residents.",
     affectedRisks: [
-      { id: "privacy", delta: -18, note: "GDPR requires granular consent, right to erasure, and data portability — currently incomplete." },
+      { id: "privacy", delta: -18, note: "GDPR requires granular consent, right to erasure, and data portability - currently incomplete." },
       { id: "audit", delta: -15, note: "GDPR mandates Records of Processing Activities (RoPA) and ability to demonstrate compliance on request." },
       { id: "compliance", delta: -12, note: "DPAs with sub-processors are required. Legal basis for each processing activity must be documented." },
-      { id: "regulatory", delta: -10, note: "Fines can reach 4% of global annual turnover — significant exposure without a formal program." },
+      { id: "regulatory", delta: -10, note: "Fines can reach 4% of global annual turnover - significant exposure without a formal program." },
     ],
     gaps: [
       "No Records of Processing Activities (RoPA) maintained",
-      "Right to erasure not fully automated — manual process required",
+      "Right to erasure not fully automated - manual process required",
       "Sub-processor DPAs not in place",
       "Data breach notification process missing (72-hour window)",
       "No Data Protection Impact Assessment (DPIA) template",
@@ -203,12 +203,12 @@ const FRAMEWORKS: Framework[] = [
       "Employee HIPAA training not documented",
       "Breach notification policy missing (60-day HHS notification requirement)",
     ],
-    enterpriseNote: "US healthcare enterprise customers require a signed BAA. Without it, the product cannot legally process PHI — blocking all clinical sales.",
+    enterpriseNote: "US healthcare enterprise customers require a signed BAA. Without it, the product cannot legally process PHI - blocking all clinical sales.",
   },
   {
     id: "iso27001",
     shortName: "ISO 27001",
-    fullName: "ISO/IEC 27001 — Information Security Management",
+    fullName: "ISO/IEC 27001 - Information Security Management",
     chipCls: "border-amber-500/40 text-amber-300 bg-amber-500/10 hover:bg-amber-500/20",
     description: "International standard for information security management systems (ISMS).",
     affectedRisks: [
@@ -229,12 +229,12 @@ const FRAMEWORKS: Framework[] = [
   {
     id: "soc2",
     shortName: "SOC 2",
-    fullName: "SOC 2 Type II — Trust Services Criteria",
+    fullName: "SOC 2 Type II - Trust Services Criteria",
     chipCls: "border-violet-500/40 text-violet-300 bg-violet-500/10 hover:bg-violet-500/20",
     description: "US auditing standard verifying controls for security, availability, processing integrity, confidentiality, and privacy.",
     affectedRisks: [
       { id: "security", delta: -15, note: "SOC 2 Security criterion requires logical access controls, encryption, and continuous monitoring." },
-      { id: "audit", delta: -22, note: "SOC 2 Type II requires 6–12 months of evidence across all selected Trust Services Criteria." },
+      { id: "audit", delta: -22, note: "SOC 2 Type II requires 6-12 months of evidence across all selected Trust Services Criteria." },
       { id: "compliance", delta: -12, note: "Documented policies and procedures are mandatory for each selected Trust Service Category." },
       { id: "operational", delta: -10, note: "Availability criterion requires defined uptime SLAs, monitoring, and incident response." },
     ],
@@ -276,7 +276,7 @@ const FRAMEWORKS: Framework[] = [
     description: "EU regulation classifying AI systems by risk level and imposing transparency, accuracy, and human oversight requirements.",
     affectedRisks: [
       { id: "ai-reliability", delta: -20, note: "EU AI Act requires technical documentation, accuracy metrics, and human oversight for high-risk AI." },
-      { id: "regulatory", delta: -22, note: "Health AI systems may be classified as high-risk under Annex III — triggering conformity assessment." },
+      { id: "regulatory", delta: -22, note: "Health AI systems may be classified as high-risk under Annex III - triggering conformity assessment." },
       { id: "privacy", delta: -12, note: "Data governance requirements apply to training and inference data used by the AI system." },
       { id: "audit", delta: -12, note: "Conformity assessment documentation and CE marking process required for high-risk systems." },
     ],
@@ -287,7 +287,7 @@ const FRAMEWORKS: Framework[] = [
       "Fundamental rights impact assessment not performed",
       "No post-market monitoring plan for AI outputs",
     ],
-    enterpriseNote: "EU AI Act enforcement ramps between 2025–2027. Health AI with automated recommendations should begin high-risk classification preparation now.",
+    enterpriseNote: "EU AI Act enforcement ramps between 2025-2027. Health AI with automated recommendations should begin high-risk classification preparation now.",
   },
 ];
 
@@ -336,7 +336,7 @@ function buildRecommendation(
       .filter(Boolean)
       .join(", ");
     const lowestFwScore = sorted[0];
-    base += ` For ${fwNames} compliance specifically, the most critical gap is ${labelMap[lowestFwScore.id] ?? lowestFwScore.name.toLowerCase()} — this area requires immediate attention before any enterprise sales motion.`;
+    base += ` For ${fwNames} compliance specifically, the most critical gap is ${labelMap[lowestFwScore.id] ?? lowestFwScore.name.toLowerCase()} - this area requires immediate attention before any enterprise sales motion.`;
   }
 
   return base;
@@ -596,7 +596,7 @@ export default function RiskPage() {
                 ))}
               </div>
               {selectedFws.length === 0 && (
-                <p className="text-xs text-zinc-600 mt-2 italic">No frameworks selected — showing baseline readiness scores</p>
+                <p className="text-xs text-zinc-600 mt-2 italic">No frameworks selected - showing baseline readiness scores</p>
               )}
             </CardContent>
           </Card>
@@ -675,7 +675,7 @@ export default function RiskPage() {
         {/* ── Radar chart ─────────────────────────────────────── */}
         <Card className="glass border-white/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-white">Readiness Profile — Radar View</CardTitle>
+            <CardTitle className="text-base text-white">Readiness Profile - Radar View</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={320}>

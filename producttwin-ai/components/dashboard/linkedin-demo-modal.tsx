@@ -19,7 +19,7 @@ import {
 
 // ─── The shareable post text (exact spec from user) ───────────────────────────
 
-const LINKEDIN_POST = `I built ProductTwin AI, an AI-powered product decision simulator for PMs and business analysts.
+const LINKEDIN_POST = `I built ProductTwin, an AI-powered product decision simulator for PMs and business analysts.
 
 The idea is simple: before shipping a product decision, simulate its impact.
 
@@ -52,12 +52,12 @@ const SECTIONS = [
     iconColor: "text-indigo-300",
     body: null,
     bullets: [
-      "Product Audit — AI-style 10-field diagnosis with scored dimensions",
-      "Scenario Simulator — 7 levers, live MRR/LTV/churn projection",
-      "KPI Dashboard — Acquisition, Activation, Retention, Revenue, Product",
-      "Roadmap Prioritizer — RICE scoring with live AI recommendation",
-      "Risk & Compliance — GDPR / HIPAA / SOC 2 / FDA / EU AI Act overlays",
-      "Strategic Report — McKinsey-style 10-section synthesis",
+      "Product Audit - AI-style 10-field diagnosis with scored dimensions",
+      "Scenario Simulator - 7 levers, live MRR/LTV/churn projection",
+      "KPI Dashboard - Acquisition, Activation, Retention, Revenue, Product",
+      "Roadmap Prioritizer - RICE scoring with live AI recommendation",
+      "Risk & Compliance - GDPR / HIPAA / SOC 2 / FDA / EU AI Act overlays",
+      "Strategic Report - McKinsey-style 10-section synthesis",
     ],
   },
   {
@@ -66,7 +66,7 @@ const SECTIONS = [
     color: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30",
     iconColor: "text-emerald-300",
     body:
-      "On the mock case (HealthTrack AI), the simulator identified that reducing onboarding from 6 → 3 steps was a higher-leverage lever than any acquisition investment — projecting +14pp activation, -25% early churn, and 60% higher RICE score than the next roadmap candidate. The pattern generalizes: most growth bottlenecks are upstream of acquisition.",
+      "On the mock case (HealthTrack AI), the simulator identified that reducing onboarding from 6 → 3 steps was a higher-leverage lever than any acquisition investment - projecting +14pp activation, -25% early churn, and 60% higher RICE score than the next roadmap candidate. The pattern generalizes: most growth bottlenecks are upstream of acquisition.",
   },
   {
     label: "Tech Stack",
@@ -79,7 +79,7 @@ const SECTIONS = [
       "shadcn/ui primitives · Radix UI · Lucide icons",
       "Recharts (Funnel · Radar · Scatter · Area · Line · Bar)",
       "Zustand (persisted state) · CVA + tailwind-merge",
-      "Deterministic rule-based simulation engine — no API calls",
+      "Deterministic rule-based simulation engine - no API calls",
     ],
   },
   {
@@ -88,7 +88,7 @@ const SECTIONS = [
     color: "from-amber-500/20 to-amber-500/5 border-amber-500/30",
     iconColor: "text-amber-300",
     body:
-      "Strategic recommendations are only credible when paired with quantified trade-offs. Building this simulator forced me to translate fuzzy PM intuition (\"onboarding feels too long\") into decision logic with explicit assumptions, sensitivities, and ranked alternatives. The best growth lever is rarely \"more marketing\" — it's almost always upstream of acquisition, and PM tools should make that obvious.",
+      "Strategic recommendations are only credible when paired with quantified trade-offs. Building this simulator forced me to translate fuzzy PM intuition (\"onboarding feels too long\") into decision logic with explicit assumptions, sensitivities, and ranked alternatives. The best growth lever is rarely \"more marketing\" - it's almost always upstream of acquisition, and PM tools should make that obvious.",
   },
 ];
 
@@ -172,7 +172,7 @@ export function LinkedInDemoModal({
                 <Badge variant="secondary" className="text-[10px]">Shareable</Badge>
               </div>
               <h2 id="linkedin-modal-title" className="text-xl font-bold text-white">
-                ProductTwin AI — Project Showcase
+                ProductTwin - Project Showcase
               </h2>
               <p className="text-sm text-zinc-400 mt-0.5">
                 One-page summary for LinkedIn posts, portfolio reviews, and demo videos
@@ -181,7 +181,7 @@ export function LinkedInDemoModal({
           </div>
         </div>
 
-        {/* Body — scrollable */}
+        {/* Body - scrollable */}
         <div className="overflow-y-auto max-h-[calc(90vh-200px)] p-6 space-y-5">
 
           {/* Structured sections */}
@@ -219,7 +219,7 @@ export function LinkedInDemoModal({
             ))}
           </div>
 
-          {/* The actual post text — clipboard-ready */}
+          {/* The actual post text - clipboard-ready */}
           <div className="rounded-xl border border-indigo-500/40 bg-gradient-to-br from-indigo-950/60 to-purple-950/40 p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">

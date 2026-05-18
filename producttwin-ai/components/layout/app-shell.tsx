@@ -32,7 +32,7 @@ export function AppShell({
 
         <footer className="px-4 sm:px-6 lg:px-10 py-6 text-xs text-zinc-600 border-t border-white/[0.04]">
           <div className="flex flex-wrap items-center justify-between gap-2 max-w-[1400px] mx-auto">
-            <span>ProductTwin AI · simulated data for demonstration · no real accounts are billed</span>
+            <span>ProductTwin · simulated data for demonstration · no real accounts are billed</span>
             <span className="opacity-70">v1.0 · Built with Next.js</span>
           </div>
         </footer>

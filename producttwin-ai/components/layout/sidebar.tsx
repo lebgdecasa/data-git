@@ -85,7 +85,7 @@ export function Sidebar({
               </div>
             </div>
             <div className="leading-tight min-w-0">
-              <div className="text-sm font-bold text-white truncate">ProductTwin AI</div>
+              <div className="text-sm font-bold text-white truncate">ProductTwin</div>
               <div className="text-[9px] uppercase tracking-[0.2em] text-zinc-500 font-semibold">
                 Strategy Studio
               </div>

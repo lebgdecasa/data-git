@@ -38,7 +38,7 @@ type Feature = {
   name: string;
   reach: number;        // users impacted / month
   impact: number;       // 0.25 / 0.5 / 1 / 2 / 3
-  confidence: number;   // 0–100 (%)
+  confidence: number;   // 0-100 (%)
   effort: number;       // person-months
 };
 
@@ -57,11 +57,11 @@ const DEFAULT_FEATURES: Feature[] = [
 ];
 
 const IMPACT_OPTIONS = [
-  { value: 3,    label: "3 — Massive" },
-  { value: 2,    label: "2 — High" },
-  { value: 1,    label: "1 — Medium" },
-  { value: 0.5,  label: "0.5 — Low" },
-  { value: 0.25, label: "0.25 — Minimal" },
+  { value: 3,    label: "3 - Massive" },
+  { value: 2,    label: "2 - High" },
+  { value: 1,    label: "1 - Medium" },
+  { value: 0.5,  label: "0.5 - Low" },
+  { value: 0.25, label: "0.25 - Minimal" },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ function calcRice(f: Feature): number {
 }
 
 function priorityOf(rice: number): "High" | "Medium" | "Low" {
-  // Scale: rice is on the order of thousands → normalize to a 0–100 score
+  // Scale: rice is on the order of thousands → normalize to a 0-100 score
   // Using a soft normalization: score = rice / 100 (so 8000 reach × 3 × 0.9 / 2 = 10,800 → 108)
   const score = rice / 100;
   if (score > 80) return "High";
@@ -118,7 +118,7 @@ function buildRecommendation(ranked: Array<Feature & { rice: number; priority: s
   const lift = runner ? (((top.rice - runner.rice) / runner.rice) * 100).toFixed(0) : "100";
   const body = runner
     ? `Its RICE score of ${formatRice(top.rice)} is ${lift}% higher than the next contender ("${runner.name}", ${formatRice(runner.rice)}). Lock this in for the current sprint and queue ${runner.name} as the follow-up.`
-    : `It is the only candidate currently scored — add more options to compare.`;
+    : `It is the only candidate currently scored - add more options to compare.`;
 
   return { headline, body, topId: top.id };
 }
@@ -179,7 +179,7 @@ export default function RoadmapPage() {
 
   const resetAll = () => setFeatures(DEFAULT_FEATURES);
 
-  // Scatter chart data — Effort (x) vs Impact (y), bubble size = reach
+  // Scatter chart data - Effort (x) vs Impact (y), bubble size = reach
   const scatterData = ranked.map((r) => ({
     x: r.effort,
     y: r.impact,

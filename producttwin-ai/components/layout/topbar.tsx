@@ -41,7 +41,7 @@ export function Topbar({
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center shadow-md shadow-indigo-500/30 shrink-0">
               <Sparkle className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-bold text-white truncate">ProductTwin AI</span>
+            <span className="text-sm font-bold text-white truncate">ProductTwin</span>
           </Link>
 
           {/* Page title + live product (desktop) */}

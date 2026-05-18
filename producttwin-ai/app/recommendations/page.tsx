@@ -35,23 +35,23 @@ const REPORT = {
   industry: "Digital Health · B2C SaaS",
   stage: "Early Growth (Series Seed)",
   date: "May 2026",
-  preparedBy: "ProductTwin AI",
+  preparedBy: "ProductTwin",
 
   executiveSummary:
-    "HealthTrack AI shows strong unit economics (LTV/CAC 10×) and accelerating MRR growth (+53% over 6 months), but is structurally constrained by weak activation (38%) and rising churn (7.5%). Compliance and audit readiness are the lowest-scoring dimensions and will block enterprise expansion until addressed. The product is in a critical 90-day window where fixing the activation funnel will compound across retention, LTV, and CAC payback — before any further acquisition spend.",
+    "HealthTrack AI shows strong unit economics (LTV/CAC 10×) and accelerating MRR growth (+53% over 6 months), but is structurally constrained by weak activation (38%) and rising churn (7.5%). Compliance and audit readiness are the lowest-scoring dimensions and will block enterprise expansion until addressed. The product is in a critical 90-day window where fixing the activation funnel will compound across retention, LTV, and CAC payback - before any further acquisition spend.",
 
   health: {
     score: 67,
     band: "Healthy with structural risks",
     strengths: [
-      "LTV/CAC at 10× — strong unit economics",
-      "MRR up 53% in 6 months — accelerating growth",
-      "CAC down 18% while CVR improved — efficient acquisition",
+      "LTV/CAC at 10× - strong unit economics",
+      "MRR up 53% in 6 months - accelerating growth",
+      "CAC down 18% while CVR improved - efficient acquisition",
     ],
     weaknesses: [
-      "Activation at 38% — 62% of trials produce no revenue",
-      "Churn climbed to 7.5% (+1.4pp) — compresses LTV",
-      "30-day retention at 34% — 11pp below industry average",
+      "Activation at 38% - 62% of trials produce no revenue",
+      "Churn climbed to 7.5% (+1.4pp) - compresses LTV",
+      "30-day retention at 34% - 11pp below industry average",
     ],
   },
 
@@ -60,7 +60,7 @@ const REPORT = {
     metric: "Only 38% of trial signups reach activation",
     impact: "Adding $1 to acquisition spend without fixing activation wastes $0.62 of it",
     rootCause:
-      "Onboarding has 6 mandatory steps (industry average is 3). Time-to-value is 3.2 days but most users churn at Day 3–7. The friction points are: wearable sync setup, health-goal configuration, and notification permissions — all front-loaded.",
+      "Onboarding has 6 mandatory steps (industry average is 3). Time-to-value is 3.2 days but most users churn at Day 3-7. The friction points are: wearable sync setup, health-goal configuration, and notification permissions - all front-loaded.",
     leverage:
       "Reducing onboarding steps from 6 → 3 would lift activation an estimated 14pp, compress time-to-value to under 1 day, and reduce early churn by approximately 35%.",
   },
@@ -69,7 +69,7 @@ const REPORT = {
     title: "Steep cohort decay in the first 7 days",
     metric: "Day 1 → Day 7 retention drops from 100% to 58%",
     diagnosis:
-      "The 42-point drop within the first week indicates the product is not delivering its core value moment before users disengage. AI Coach — the highest-value feature — has only 54% adoption because it is gated behind onboarding step 5.",
+      "The 42-point drop within the first week indicates the product is not delivering its core value moment before users disengage. AI Coach - the highest-value feature - has only 54% adoption because it is gated behind onboarding step 5.",
     fix: "Move the AI Coach to be the first interaction (post-signup), making the 'aha moment' visible within 60 seconds. Defer wearable sync and goal configuration to a soft prompt on Day 2.",
   },
 
@@ -77,7 +77,7 @@ const REPORT = {
     title: "Reduce onboarding steps",
     riceScore: 108,
     rationale:
-      "This single change improves activation, retention, time-to-value, and CAC payback simultaneously. RICE score of 108 — 60% higher than the next contender (AI Recommendation Engine, RICE 65). Estimated effort: 2 person-months. Estimated impact: +14pp activation, -25% early churn.",
+      "This single change improves activation, retention, time-to-value, and CAC payback simultaneously. RICE score of 108 - 60% higher than the next contender (AI Recommendation Engine, RICE 65). Estimated effort: 2 person-months. Estimated impact: +14pp activation, -25% early churn.",
     runnerUp: "AI recommendation engine personalization (queue as Q3 priority).",
   },
 
@@ -85,20 +85,20 @@ const REPORT = {
     enterpriseScore: 54,
     band: "Partially Ready",
     blockers: [
-      "Audit readiness at 29/100 — no audit logs, no automated evidence",
-      "Compliance program at 38/100 — no DPA templates, no incident response plan",
-      "Regulatory exposure at 43/100 — no GDPR, HIPAA, or EU AI Act gap analysis",
+      "Audit readiness at 29/100 - no audit logs, no automated evidence",
+      "Compliance program at 38/100 - no DPA templates, no incident response plan",
+      "Regulatory exposure at 43/100 - no GDPR, HIPAA, or EU AI Act gap analysis",
     ],
     recommendation:
       "Before any enterprise sales motion, invest in three foundational items: (1) adopt an automated compliance platform (Vanta/Drata) for SOC 2 Type I, (2) draft DPA templates for EU and US buyers, (3) commission a regulatory gap analysis covering HIPAA + EU AI Act.",
   },
 
   thirtyDayPlan: [
-    { owner: "Product", task: "Ship 3-step onboarding (down from 6) — front-load AI Coach", impact: "Activation +14pp" },
+    { owner: "Product", task: "Ship 3-step onboarding (down from 6) - front-load AI Coach", impact: "Activation +14pp" },
     { owner: "Product", task: "Add audit logs for admin actions and PHI access events", impact: "Audit Readiness +18pts" },
     { owner: "Growth", task: "Pause paid acquisition above $30 CAC until activation > 50%", impact: "Save ~$8k/mo CAC waste" },
     { owner: "Engineering", task: "Implement rate limiting on all API routes + enforce MFA", impact: "Security Risk -12 (Low band)" },
-    { owner: "GTM", task: "Build referral mechanic with $20 credit — soft-launch to power users", impact: "CAC -15% (organic lift)" },
+    { owner: "GTM", task: "Build referral mechanic with $20 credit - soft-launch to power users", impact: "CAC -15% (organic lift)" },
   ],
 
   ninetyDayStrategy: [
@@ -144,12 +144,12 @@ const REPORT = {
   },
 
   finalRecommendation:
-    "HealthTrack AI recommends prioritizing onboarding simplification before increasing acquisition spend. The current product has strong monetization potential and accelerating revenue, but activation and churn are limiting growth. Compliance readiness should be improved in parallel before targeting enterprise customers — not as an afterthought.",
+    "HealthTrack AI recommends prioritizing onboarding simplification before increasing acquisition spend. The current product has strong monetization potential and accelerating revenue, but activation and churn are limiting growth. Compliance readiness should be improved in parallel before targeting enterprise customers - not as an afterthought.",
 };
 
 // ─── LinkedIn Summary ─────────────────────────────────────────────────────────
 
-const LINKEDIN_SUMMARY = `🎯 Strategic product diagnosis I ran on HealthTrack AI using ProductTwin AI:
+const LINKEDIN_SUMMARY = `🎯 Strategic product diagnosis I ran on HealthTrack AI using ProductTwin:
 
 📊 The numbers:
 • MRR up 53% in 6 months
@@ -166,7 +166,7 @@ Fix onboarding before scaling spend. Reducing steps from 6 → 3 should lift act
 Compliance readiness at 38/100. Before any enterprise motion, the product needs SOC 2 + DPA templates + a HIPAA/EU AI Act gap analysis.
 
 ✨ The big lesson:
-The best growth lever is rarely "more marketing." It's almost always upstream of acquisition — in activation, retention, or the value moment.
+The best growth lever is rarely "more marketing." It's almost always upstream of acquisition - in activation, retention, or the value moment.
 
 #productmanagement #startups #productstrategy`;
 
@@ -557,7 +557,7 @@ export default function RecommendationsPage() {
 
         {/* ── Footer ───────────────────────────────────────────── */}
         <div className="text-center text-xs text-zinc-600 pt-4 print:text-zinc-500">
-          <p>Generated by ProductTwin AI · {REPORT.date} · This is a strategic simulation, not financial or legal advice.</p>
+          <p>Generated by ProductTwin · {REPORT.date} · This is a strategic simulation, not financial or legal advice.</p>
         </div>
 
       </div>

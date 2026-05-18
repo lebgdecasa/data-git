@@ -23,7 +23,7 @@ const PROBLEMS = [
   {
     icon: Brain,
     title: "Decisions driven by intuition",
-    desc: "Teams ship features and change pricing based on gut feel — with no structured way to estimate business outcomes before committing.",
+    desc: "Teams ship features and change pricing based on gut feel - with no structured way to estimate business outcomes before committing.",
   },
   {
     icon: Clock,
@@ -41,7 +41,7 @@ const SOLUTIONS = [
   {
     icon: Zap,
     title: "Simulate strategic decisions",
-    desc: "Model pricing, acquisition, churn, and activation changes against a live 36-month financial twin — before a single line of code ships.",
+    desc: "Model pricing, acquisition, churn, and activation changes against a live 36-month financial twin - before a single line of code ships.",
   },
   {
     icon: BarChart3,
@@ -56,7 +56,7 @@ const SOLUTIONS = [
   {
     icon: Map,
     title: "Prioritize roadmap intelligently",
-    desc: "RICE-scored backlog with an impact / effort matrix. Move initiatives between Now, Next, and Later with a click — no Jira ceremony.",
+    desc: "RICE-scored backlog with an impact / effort matrix. Move initiatives between Now, Next, and Later with a click - no Jira ceremony.",
   },
 ];
 
@@ -64,7 +64,7 @@ const FEATURES = [
   {
     icon: Brain,
     title: "AI Product Audit",
-    desc: "Input your assumptions — pricing, churn, CAC, activation, retention — and get a live diagnostic of your product's health.",
+    desc: "Input your assumptions - pricing, churn, CAC, activation, retention - and get a live diagnostic of your product's health.",
     badge: "Core",
   },
   {
@@ -76,7 +76,7 @@ const FEATURES = [
   {
     icon: Zap,
     title: "Scenario Simulator",
-    desc: "Run what-if scenarios. Slide pricing up 20%, cut churn by 40%, or triple acquisition spend — and see the 36-month delta instantly.",
+    desc: "Run what-if scenarios. Slide pricing up 20%, cut churn by 40%, or triple acquisition spend - and see the 36-month delta instantly.",
     badge: "Simulation",
   },
   {
@@ -94,7 +94,7 @@ const FEATURES = [
   {
     icon: Gauge,
     title: "Startup Survival Score",
-    desc: "A single composite signal — weighted across five risk dimensions — that tells founders and boards how close to the edge they really are.",
+    desc: "A single composite signal - weighted across five risk dimensions - that tells founders and boards how close to the edge they really are.",
     badge: "Score",
   },
 ];
@@ -120,7 +120,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-semibold">ProductTwin AI</div>
+              <div className="text-sm font-semibold">ProductTwin</div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 Decision Simulator
               </div>
@@ -156,7 +156,7 @@ export default function Landing() {
         </h1>
 
         <p className="mt-8 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
-          ProductTwin AI helps teams forecast the impact of pricing, onboarding,
+          ProductTwin helps teams forecast the impact of pricing, onboarding,
           roadmap, retention, and compliance decisions using structured business
           logic and AI-style recommendations.
         </p>
@@ -205,7 +205,7 @@ export default function Landing() {
                   <div className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
                   <div className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
                   <span className="ml-2 text-xs text-muted-foreground">
-                    ProductTwin AI · Executive Overview
+                    ProductTwin · Executive Overview
                   </span>
                 </div>
                 <Badge variant="success">
@@ -455,7 +455,7 @@ export default function Landing() {
             <div className="h-5 w-5 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center">
               <Sparkle className="h-2.5 w-2.5 text-white" />
             </div>
-            <span>ProductTwin AI · portfolio demo · no real data is stored</span>
+            <span>ProductTwin · portfolio demo · no real data is stored</span>
           </div>
           <div className="flex items-center gap-2">
             <Github className="h-3 w-3" />

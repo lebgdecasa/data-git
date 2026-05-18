@@ -56,7 +56,7 @@
     @apply outline-none ring-2 ring-indigo-500/60 ring-offset-2 ring-offset-zinc-950;
   }
 
-  /* Global scrollbar — subtle, premium feel */
+  /* Global scrollbar - subtle, premium feel */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -107,7 +107,7 @@
       0 12px 24px -12px rgba(0, 0, 0, 0.6);
   }
 
-  /* Gradient text — used for emphasis */
+  /* Gradient text - used for emphasis */
   .gradient-text {
     @apply bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent;
   }
@@ -204,7 +204,7 @@
     text-wrap: balance;
   }
 
-  /* Numeric / tabular figures — for stat displays */
+  /* Numeric / tabular figures - for stat displays */
   .tabular-numeric {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
@@ -225,7 +225,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Animated chart appearance — recharts inherits */
+/* Animated chart appearance - recharts inherits */
 .recharts-surface {
   overflow: visible;
 }

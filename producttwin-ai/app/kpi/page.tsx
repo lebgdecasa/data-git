@@ -90,10 +90,10 @@ const ACTIVATION_KPIS = [
 ];
 
 const RETENTION_KPIS = [
-  { label: "Monthly Churn", value: "7.5%", prev: "6.1%", trend: "down", good: false, note: "↑ Rising — flag" },
+  { label: "Monthly Churn", value: "7.5%", prev: "6.1%", trend: "down", good: false, note: "↑ Rising - flag" },
   { label: "30-Day Retention", value: "34%", prev: "38%", trend: "down", good: false, note: "Industry avg: 45%" },
   { label: "Repeat Usage", value: "4.1×/wk", prev: "3.8×", trend: "up", good: true, note: "Power users: 8.4×" },
-  { label: "Health Score", value: "67 / 100", prev: "71", trend: "down", good: false, note: "Sliding — monitor" },
+  { label: "Health Score", value: "67 / 100", prev: "71", trend: "down", good: false, note: "Sliding - monitor" },
 ];
 
 const REVENUE_KPIS = [
@@ -236,7 +236,7 @@ export default function KpiPage() {
               </FunnelChart>
             </ResponsiveContainer>
             <Insight>
-              Activation is the weakest stage of the funnel — only 38% of trial signups reach activation. Improving onboarding should be prioritized before increasing acquisition spend.
+              Activation is the weakest stage of the funnel - only 38% of trial signups reach activation. Improving onboarding should be prioritized before increasing acquisition spend.
             </Insight>
           </CardContent>
         </Card>
@@ -252,7 +252,7 @@ export default function KpiPage() {
         {/* ── RETENTION CURVE ─────────────────────────────────────── */}
         <Card className="glass border-white/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-white">Retention Curve (Cohort D1–D90)</CardTitle>
+            <CardTitle className="text-base text-white">Retention Curve (Cohort D1-D90)</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
@@ -274,7 +274,7 @@ export default function KpiPage() {
               </AreaChart>
             </ResponsiveContainer>
             <Insight>
-              Retention drops to 34% by Day 30 against an industry average of 45%. The steepest drop occurs between Day 1 and Day 7, suggesting the critical engagement window is being missed — likely due to incomplete onboarding.
+              Retention drops to 34% by Day 30 against an industry average of 45%. The steepest drop occurs between Day 1 and Day 7, suggesting the critical engagement window is being missed - likely due to incomplete onboarding.
             </Insight>
           </CardContent>
         </Card>
@@ -290,7 +290,7 @@ export default function KpiPage() {
         {/* ── REVENUE TREND CHART ──────────────────────────────────── */}
         <Card className="glass border-white/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-white">MRR Growth — 6-Month Trend</CardTitle>
+            <CardTitle className="text-base text-white">MRR Growth - 6-Month Trend</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
@@ -319,7 +319,7 @@ export default function KpiPage() {
               </LineChart>
             </ResponsiveContainer>
             <Insight>
-              MRR has grown 53.8% over six months, from $31.2k to $48k. Growth is accelerating — the Nov–Jan ramp was slower, while Mar–Apr posted the highest single-month gain. Sustaining this requires keeping churn below 6%.
+              MRR has grown 53.8% over six months, from $31.2k to $48k. Growth is accelerating - the Nov-Jan ramp was slower, while Mar-Apr posted the highest single-month gain. Sustaining this requires keeping churn below 6%.
             </Insight>
           </CardContent>
         </Card>
@@ -362,7 +362,7 @@ export default function KpiPage() {
               </BarChart>
             </ResponsiveContainer>
             <Insight>
-              Health Logs and Reminders are the stickiest features (78% and 68% adoption). AI Coach and Goals Tracker sit in the middle — both have high-value potential but low discoverability. Social Share at 22% is a non-starter and should be deprioritized or redesigned.
+              Health Logs and Reminders are the stickiest features (78% and 68% adoption). AI Coach and Goals Tracker sit in the middle - both have high-value potential but low discoverability. Social Share at 22% is a non-starter and should be deprioritized or redesigned.
             </Insight>
           </CardContent>
         </Card>
@@ -370,7 +370,7 @@ export default function KpiPage() {
         {/* ── KPI COMPARISON SUMMARY ──────────────────────────────── */}
         <Card className="glass border-white/10">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-white">KPI Comparison — Current vs Prior Period</CardTitle>
+            <CardTitle className="text-base text-white">KPI Comparison - Current vs Prior Period</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -415,7 +415,7 @@ export default function KpiPage() {
               </table>
             </div>
             <Insight>
-              8 out of 10 tracked KPIs improved period-over-period. The two red flags — churn (+1.4pp) and 30-day retention (-4pp) — are structurally linked: fixing early retention will directly reduce churn. That should be the team's top priority this quarter.
+              8 out of 10 tracked KPIs improved period-over-period. The two red flags - churn (+1.4pp) and 30-day retention (-4pp) - are structurally linked: fixing early retention will directly reduce churn. That should be the team's top priority this quarter.
             </Insight>
           </CardContent>
         </Card>
@@ -425,9 +425,9 @@ export default function KpiPage() {
           <div className="glass rounded-xl p-5 border border-emerald-500/20">
             <p className="text-xs uppercase tracking-wide text-emerald-400 font-semibold mb-2">Strengths</p>
             <ul className="space-y-1.5 text-sm text-zinc-300">
-              <li>· LTV/CAC ratio improved to 10× — exceptional unit economics</li>
-              <li>· MRR growing at 53% over 6 months — healthy revenue trajectory</li>
-              <li>· CAC dropped 18% while CVR improved — efficient growth</li>
+              <li>· LTV/CAC ratio improved to 10× - exceptional unit economics</li>
+              <li>· MRR growing at 53% over 6 months - healthy revenue trajectory</li>
+              <li>· CAC dropped 18% while CVR improved - efficient growth</li>
             </ul>
           </div>
           <div className="glass rounded-xl p-5 border border-rose-500/20">
@@ -441,8 +441,8 @@ export default function KpiPage() {
           <div className="glass rounded-xl p-5 border border-amber-500/20">
             <p className="text-xs uppercase tracking-wide text-amber-400 font-semibold mb-2">Priorities</p>
             <ul className="space-y-1.5 text-sm text-zinc-300">
-              <li>· Fix Day 1–7 retention drop before scaling acquisition</li>
-              <li>· Improve AI Coach discoverability — highest upside feature</li>
+              <li>· Fix Day 1-7 retention drop before scaling acquisition</li>
+              <li>· Improve AI Coach discoverability - highest upside feature</li>
               <li>· Set churn target ≤5.5% for next quarter to protect MRR</li>
             </ul>
           </div>

@@ -172,7 +172,7 @@ function generateAudit(f: FormData): AuditReport {
     risks.push({
       title: "Onboarding friction above safe threshold",
       severity: f.onboardingSteps > 9 ? "critical" : "high",
-      description: `With ${f.onboardingSteps} steps before the user reaches core value, drop-off before activation is near-certain. Industry best practice is 3–5 steps maximum.`,
+      description: `With ${f.onboardingSteps} steps before the user reaches core value, drop-off before activation is near-certain. Industry best practice is 3-5 steps maximum.`,
       implication: "High friction onboarding suppresses activation rates, inflates CAC, and creates negative first impressions that are rarely recovered.",
     });
   }
@@ -238,7 +238,7 @@ function generateAudit(f: FormData): AuditReport {
   if (f.onboardingSteps <= 5 && f.mainFriction.trim()) {
     opportunities.push({
       title: "Compress time-to-value to under 5 minutes",
-      description: `With ${f.onboardingSteps} onboarding steps and an identified friction point, you are 2–3 targeted changes away from a meaningfully faster activation loop. Pre-filled templates, smart defaults, and a single-goal first session can close this gap rapidly.`,
+      description: `With ${f.onboardingSteps} onboarding steps and an identified friction point, you are 2-3 targeted changes away from a meaningfully faster activation loop. Pre-filled templates, smart defaults, and a single-goal first session can close this gap rapidly.`,
       effort: "low",
       impact: "high",
     });
@@ -270,14 +270,14 @@ function generateAudit(f: FormData): AuditReport {
   if (f.complianceSensitivity !== "low") {
     opportunities.push({
       title: "Turn compliance into a sales accelerant",
-      description: "Teams that reach SOC 2 Type I within 90 days can position compliance as a trust signal rather than a procurement checkbox. A public trust center and DPA template remove legal friction and shorten sales cycles by 3–4 weeks on average.",
+      description: "Teams that reach SOC 2 Type I within 90 days can position compliance as a trust signal rather than a procurement checkbox. A public trust center and DPA template remove legal friction and shorten sales cycles by 3-4 weeks on average.",
       effort: "medium",
       impact: "medium",
     });
   } else {
     opportunities.push({
       title: "Build a referral loop into the activation milestone",
-      description: `In ${f.industry || "your market"}, product-led referral loops activated at the moment of first value (the aha moment) generate the lowest-CAC acquisition. One well-timed share prompt at activation can unlock 15–25% of new sign-ups from existing users.`,
+      description: `In ${f.industry || "your market"}, product-led referral loops activated at the moment of first value (the aha moment) generate the lowest-CAC acquisition. One well-timed share prompt at activation can unlock 15-25% of new sign-ups from existing users.`,
       effort: "low",
       impact: "medium",
     });
@@ -289,13 +289,13 @@ function generateAudit(f: FormData): AuditReport {
 
   if (f.onboardingSteps > 5) {
     recommendedNextAction = "Fix onboarding before spending another dollar on acquisition";
-    nextActionDetail = `Every new user you acquire right now is entering a ${f.onboardingSteps}-step funnel with a high probability of dropping before they see value. Map every step against the activation milestone and eliminate anything that does not directly contribute to it. Target 3–5 steps within the next sprint.`;
+    nextActionDetail = `Every new user you acquire right now is entering a ${f.onboardingSteps}-step funnel with a high probability of dropping before they see value. Map every step against the activation milestone and eliminate anything that does not directly contribute to it. Target 3-5 steps within the next sprint.`;
   } else if (f.pricingModel === "unclear" || !f.pricingModel) {
     recommendedNextAction = "Define and test a pricing hypothesis this week";
-    nextActionDetail = "Pick one pricing model and a price point. Run 10 customer interviews with a willingness-to-pay question. The goal is not the perfect price — it is a falsifiable hypothesis you can validate in 30 days.";
+    nextActionDetail = "Pick one pricing model and a price point. Run 10 customer interviews with a willingness-to-pay question. The goal is not the perfect price - it is a falsifiable hypothesis you can validate in 30 days.";
   } else if (f.complianceSensitivity === "high") {
     recommendedNextAction = "Initiate a SOC 2 Type I engagement this quarter";
-    nextActionDetail = "Choose a compliance automation platform and begin evidence collection. A Type I report is achievable in 60–90 days and immediately unlocks enterprise procurement conversations you are currently losing.";
+    nextActionDetail = "Choose a compliance automation platform and begin evidence collection. A Type I report is achievable in 60-90 days and immediately unlocks enterprise procurement conversations you are currently losing.";
   } else if (!f.targetCustomer.trim()) {
     recommendedNextAction = "Sharpen your ICP to one specific persona before the next growth push";
     nextActionDetail = "Interview your best 5 customers and identify the common job title, company size, trigger event, and desired outcome. Write a one-paragraph ICP statement. Make every marketing and product decision against this statement for the next 90 days.";
@@ -458,7 +458,7 @@ export default function AuditPage() {
               <div className="space-y-1.5">
                 <Label>Target customer</Label>
                 <Input
-                  placeholder="e.g. B2B: HR managers at companies with 50–500 employees"
+                  placeholder="e.g. B2B: HR managers at companies with 50-500 employees"
                   value={form.targetCustomer}
                   onChange={(e) => set("targetCustomer", e.target.value)}
                 />

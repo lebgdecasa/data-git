@@ -246,19 +246,19 @@ function generateRecommendation(
   // Determine the bottleneck from baseline
   const bottleneck =
     baseline.activation < 50
-      ? "activation is the binding constraint — every other lever compounds on top of it"
+      ? "activation is the binding constraint - every other lever compounds on top of it"
       : baseline.churn > 5
         ? "churn is consuming top-of-funnel gains faster than acquisition can replace them"
         : "monetization efficiency is the bottleneck preventing healthy reinvestment in growth";
 
-  const headline = `${winner.label} creates more impact than ${runnerUp.label.toLowerCase()} — because ${bottleneck}.`;
+  const headline = `${winner.label} creates more impact than ${runnerUp.label.toLowerCase()} - because ${bottleneck}.`;
 
   const body =
     current.healthScore > baseline.healthScore + 5
-      ? `Your current scenario lifts Product Health from ${baseline.healthScore} → ${current.healthScore} (+${current.healthScore - baseline.healthScore} pts) and MRR by ${formatMoney(current.mrr - baseline.mrr)}. Worth executing — but the simulator shows a higher-leverage combination is available.`
+      ? `Your current scenario lifts Product Health from ${baseline.healthScore} → ${current.healthScore} (+${current.healthScore - baseline.healthScore} pts) and MRR by ${formatMoney(current.mrr - baseline.mrr)}. Worth executing - but the simulator shows a higher-leverage combination is available.`
       : current.healthScore < baseline.healthScore - 2
         ? `Your current scenario reduces Product Health by ${baseline.healthScore - current.healthScore} points. This combination prioritizes the wrong levers given where the product is bottlenecked.`
-        : `Your current scenario is roughly neutral. The simulator suggests the single biggest unlock is below — pair it with a churn target for a compounding effect.`;
+        : `Your current scenario is roughly neutral. The simulator suggests the single biggest unlock is below - pair it with a churn target for a compounding effect.`;
 
   const supporting = impacts.slice(0, 4).map((i) =>
     `${i.label} → +${i.healthDelta} health · ${i.mrrDelta >= 0 ? "+" : ""}${formatMoney(i.mrrDelta)} MRR`,

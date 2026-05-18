@@ -111,7 +111,7 @@ const DIAGNOSES = [
     icon: TrendingUp,
     tone: "good",
     title: "Promising monetization",
-    body: "LTV:CAC ratio of 10x is exceptional. Revenue efficiency is a genuine competitive moat — protect it as you scale.",
+    body: "LTV:CAC ratio of 10x is exceptional. Revenue efficiency is a genuine competitive moat - protect it as you scale.",
   },
   {
     icon: Zap,
@@ -123,7 +123,7 @@ const DIAGNOSES = [
     icon: TrendingDown,
     tone: "bad",
     title: "Churn is unsustainably high",
-    body: "7.5% monthly churn means ~62% annual logo loss. At this rate, growth is a treadmill — every new user barely replaces one lost.",
+    body: "7.5% monthly churn means ~62% annual logo loss. At this rate, growth is a treadmill - every new user barely replaces one lost.",
   },
   {
     icon: ShieldAlert,
@@ -135,7 +135,7 @@ const DIAGNOSES = [
     icon: Map,
     tone: "warn",
     title: "Roadmap needs hard cuts",
-    body: "Complexity at 74% is a velocity killer. Freeze everything outside the top 3 bets — activation, churn, and compliance — this quarter.",
+    body: "Complexity at 74% is a velocity killer. Freeze everything outside the top 3 bets - activation, churn, and compliance - this quarter.",
   },
 ];
 
@@ -333,7 +333,7 @@ export default function DashboardPage() {
             </p>
             <p className="text-sm text-muted-foreground mt-2 leading-relaxed max-w-xl">
               LTV:CAC of <span className="text-foreground font-medium">10x</span> is world-class, but 7.5% monthly churn is erasing top-of-funnel gains.
-              Two fixes — activation and churn — unlock compounding growth. Everything else is secondary.
+              Two fixes - activation and churn - unlock compounding growth. Everything else is secondary.
             </p>
             <div className="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
               {[
@@ -423,7 +423,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>MRR Growth</CardTitle>
-                  <p className="text-xs text-muted-foreground mt-1">Jan–Dec · trailing 12 months</p>
+                  <p className="text-xs text-muted-foreground mt-1">Jan-Dec · trailing 12 months</p>
                 </div>
                 <div className="text-right">
                   <div className="text-xl font-semibold">$48,000</div>
