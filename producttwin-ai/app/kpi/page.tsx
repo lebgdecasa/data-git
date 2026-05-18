@@ -19,6 +19,8 @@ import {
   YAxis,
 } from "recharts";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { NextStep } from "@/components/layout/next-step";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -186,17 +188,14 @@ const fmtK = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`;
 
 export default function KpiPage() {
   return (
-    <AppShell title="KPI Dashboard" subtitle="HealthTrack AI · May 2026">
-      <div className="p-6 space-y-10 max-w-7xl mx-auto">
-
-        {/* Page Header */}
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-bold text-white">KPI Dashboard</h1>
-            <Badge variant="secondary" className="text-xs">HealthTrack AI</Badge>
-          </div>
-          <p className="text-sm text-zinc-400">May 2026 · Monthly snapshot · All metrics vs prior period</p>
-        </div>
+    <AppShell>
+      <PageHeader
+        step={4}
+        eyebrow="Impact Results"
+        title="Your full impact analysis"
+        description="A 5-group KPI breakdown across acquisition, activation, retention, revenue, and product — with strategic interpretation under every chart."
+      />
+      <div className="space-y-10">
 
         {/* ── ACQUISITION ─────────────────────────────────────────── */}
         <section>
@@ -449,6 +448,12 @@ export default function KpiPage() {
         </div>
 
       </div>
+
+      <NextStep
+        label="Get your strategic action plan"
+        description="See your full 10-section executive report with growth bottleneck, retention risk, 30/90-day plan, and survival score."
+        href="/recommendations"
+      />
     </AppShell>
   );
 }

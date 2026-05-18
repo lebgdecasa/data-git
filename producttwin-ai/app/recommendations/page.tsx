@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -280,8 +281,14 @@ export default function RecommendationsPage() {
   };
 
   return (
-    <AppShell title="Final AI Recommendations" subtitle={`${REPORT.product} · Strategic Diagnosis Report`}>
-      <div className="p-6 max-w-5xl mx-auto space-y-10 print:max-w-none print:p-0">
+    <AppShell>
+      <PageHeader
+        step={5}
+        eyebrow="Recommendations"
+        title="Your strategic action plan"
+        description="A 10-section executive report synthesizing everything: bottleneck, retention risk, roadmap priority, compliance gaps, 30/90-day plan, and survival score."
+      />
+      <div className="max-w-5xl space-y-10 print:max-w-none print:p-0">
 
         {/* ── Report Cover ─────────────────────────────────────── */}
         <div className="glass rounded-2xl border border-white/10 p-8 bg-gradient-to-br from-indigo-950/30 via-zinc-900/50 to-purple-950/20 print:border-0 print:bg-white print:text-black">

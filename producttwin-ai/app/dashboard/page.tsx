@@ -37,6 +37,8 @@ import {
   Zap,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { NextStep } from "@/components/layout/next-step";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -270,7 +272,13 @@ const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any
 /* ─── PAGE ──────────────────────────────────── */
 export default function DashboardPage() {
   return (
-    <AppShell title="Product Dashboard" subtitle="Real-time health overview · HealthTrack AI">
+    <AppShell>
+      <PageHeader
+        step={2}
+        eyebrow="Business Audit"
+        title="Your strategic diagnosis"
+        description="A scored snapshot of your product's health across monetization, activation, retention, compliance, and execution. The biggest bottleneck is highlighted below."
+      />
 
       {/* ── PRODUCT IDENTITY HEADER ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-5 rounded-2xl glass">
@@ -648,6 +656,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <NextStep
+        label="Test a strategic decision"
+        description="Move to the Scenario Simulator to model the impact of fixing your biggest bottleneck before you commit engineering cycles."
+        href="/simulator"
+      />
     </AppShell>
   );
 }

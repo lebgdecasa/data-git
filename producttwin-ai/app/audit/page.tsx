@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header";
+import { NextStep } from "@/components/layout/next-step";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -112,29 +114,21 @@ export default function AuditPage() {
   const isReady = profile.productName.trim().length > 1 && completion >= 30;
 
   return (
-    <AppShell title="Step 1 · Product Audit" subtitle="Define your product. Everything downstream uses this data.">
-      <div className="space-y-6">
+    <AppShell>
+      <PageHeader
+        step={1}
+        eyebrow="Business Profile"
+        title="Define your product"
+        description="Tell us about your product. ProductTwin uses this data across the audit, simulator, and final recommendations — everything downstream is calibrated to what you enter here."
+        actions={
+          <Button size="sm" variant="outline" onClick={loadDemo}>
+            <Database className="h-3.5 w-3.5" />
+            Load NutriFlow Demo
+          </Button>
+        }
+      />
 
-        {/* ── Intro banner ────────────────────────────────────────── */}
-        <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-950/30 to-purple-950/20">
-          <CardContent className="p-5 flex flex-col md:flex-row md:items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center shrink-0">
-              <FileText className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-white leading-relaxed">
-                Start by describing your product. ProductTwin will use this information across the dashboard,
-                scenario simulator, roadmap, and final recommendations.
-              </p>
-            </div>
-            <div className="flex gap-2 shrink-0">
-              <Button size="sm" variant="outline" onClick={loadDemo}>
-                <Database className="h-3.5 w-3.5" />
-                Load NutriFlow Demo Data
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
 
         {/* ── Completion progress ─────────────────────────────────── */}
         <Card className="border-white/10">
@@ -489,12 +483,24 @@ export default function AuditPage() {
             <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
             <p>
               Your data is saved automatically in your browser. It persists across page reloads.
-              Click "Load NutriFlow Demo Data" above to see a complete example.
+              Click "Load NutriFlow Demo" above to see a complete example.
             </p>
           </div>
         )}
 
       </div>
+
+      <NextStep
+        label={audit ? "See your strategic dashboard" : "Generate your audit"}
+        description={
+          audit
+            ? "Review your scored diagnosis and identify the biggest bottleneck before simulating changes."
+            : "Fill at least 30% of the profile, then generate your audit to unlock the rest of the journey."
+        }
+        href={audit ? "/dashboard" : "#"}
+        disabled={!audit}
+        disabledHint={!audit ? "Complete your profile and click 'Generate Audit' first." : undefined}
+      />
     </AppShell>
   );
 }
