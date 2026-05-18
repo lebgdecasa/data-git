@@ -1,52 +1,165 @@
 # ProductTwin AI
 
-A premium-feeling, portfolio-grade simulation studio for product managers, founders, and innovation teams. Drop in your assumptions (pricing, churn, CAC, retention, activation, compliance, roadmap complexity) and ProductTwin AI generates a live digital twin: financial projections, risk scores, scenario simulations, roadmap prioritization, and AI-style strategic recommendations.
+> **An AI-powered product decision simulator for PMs, business analysts, and founders.**
+> Simulate the impact of a product decision — pricing, onboarding, roadmap, compliance — *before* you ship it.
 
-> Built with Next.js (App Router), TypeScript, Tailwind CSS, shadcn/ui-style primitives, Recharts and Zustand. No backend — all simulations run client-side over local state.
+![Stack](https://img.shields.io/badge/Next.js-14-black) ![Stack](https://img.shields.io/badge/TypeScript-strict-blue) ![Stack](https://img.shields.io/badge/TailwindCSS-3-cyan) ![Stack](https://img.shields.io/badge/Recharts-2-orange) ![Stack](https://img.shields.io/badge/Status-portfolio_project-purple)
 
-## Pages
+---
 
-| Route | Description |
-| --- | --- |
-| `/` | Landing page with hero, feature grid, animated mockup, CTA |
-| `/dashboard` | Executive overview — financial KPIs, growth chart, risk gauge, top moves |
-| `/audit` | Product audit — edit every assumption, see a live snapshot and audit checks |
-| `/simulator` | Scenario simulator — tweak pricing, churn, acquisition, activation; compare against baseline |
-| `/kpi` | KPI dashboard — revenue ramp, funnel, cohort retention, benchmark radar, channel mix |
-| `/roadmap` | Roadmap prioritization — RICE-scored backlog with impact / effort matrix and Now / Next / Later columns |
-| `/risk` | Risk & compliance score — composite gauge, 5-axis radar, compliance checklist, risk register |
-| `/recommendations` | AI strategic recommendations — auto-generated CEO brief plus prioritized moves with rationale and next actions |
+## 1. The Problem
 
-## Architecture
+Most product decisions are made with intuition and incomplete data:
 
-- **State**: a single `useTwinStore` Zustand store (with `localStorage` persistence) holds the `ProductAssumptions` and `roadmap`. Every page derives its numbers from this store via `useMemo`, so editing an assumption updates every dashboard in real time.
-- **Engine**: `lib/engine.ts` runs a deterministic 36-month simulation (`simulate`), composes a five-dimension `riskScore`, and generates contextual `Recommendation`s.
-- **UI**: shadcn-style primitives (`button`, `card`, `slider`, `tabs`, `select`, `progress`, `badge`, …) built directly in `components/ui` so the project is self-contained.
+- A PM raises prices, then watches activation collapse.
+- A founder pours budget into ads, while 62% of trial signups never reach activation.
+- A team ships a "compliance feature" that doesn't move enterprise deals.
+- A roadmap is built on loud opinions, not ranked impact.
 
-## Get started
+There is **no safe sandbox** to simulate the consequences of these decisions before committing engineering cycles and ad spend. By the time the data comes in, the cost is already sunk.
+
+## 2. The Solution
+
+**ProductTwin AI** is a strategy studio that lets product teams diagnose, simulate, and prioritize before they ship. It runs on a deterministic simulation engine (no API calls, no hallucinations) that translates fuzzy PM intuition into ranked alternatives with explicit assumptions.
+
+It answers four questions every product team faces:
+
+1. **How healthy is my product today?**
+2. **What's my biggest growth bottleneck — and what happens if I fix it?**
+3. **Which feature on my roadmap has the highest leverage?**
+4. **Am I enterprise-ready, or will compliance block my next round?**
+
+## 3. Key Features
+
+| Module | What it does |
+|---|---|
+| **Dashboard** | Real-time health overview — MRR, churn, activation, retention, LTV/CAC, with composite health score and AI strategic diagnosis. |
+| **Product Audit** | 10-field structured input → AI-style scored report across clarity, monetization, friction, positioning, and compliance dimensions. |
+| **Scenario Simulator** | 7 levers (pricing, onboarding, churn target, marketing budget, compliance investment, feature complexity, activation target). 8 before/after metrics. Live AI recommendation engine ranks the highest-impact lever. Includes a risk heatmap. |
+| **KPI Dashboard** | 5 KPI groups (Acquisition, Activation, Retention, Revenue, Product) with funnel chart, retention curve, MRR trend, and feature adoption — each with strategic interpretation. |
+| **Roadmap Prioritizer** | Live-editable RICE scoring with auto-calculated priority bands and contextual AI recommendation explaining the winning feature. |
+| **Risk & Compliance** | 8 risk categories with framework overlays (GDPR / HIPAA / SOC 2 / ISO 27001 / FDA SaMD / EU AI Act). Composite Enterprise Readiness Score adjusts as frameworks are toggled. |
+| **AI Recommendations** | McKinsey-style 10-section strategic report: Executive Summary, Growth Bottleneck, Retention Risk, 30-Day Plan, 90-Day Strategy, Startup Survival Score, Final Recommendation. Export to PDF + Copy LinkedIn Summary. |
+| **LinkedIn Demo Mode** | One-click shareable project showcase modal with clipboard-ready post text. |
+
+## 4. Tech Stack
+
+**Frontend**
+- [Next.js 14](https://nextjs.org/) (App Router, static rendering, all pages prerendered)
+- [TypeScript](https://www.typescriptlang.org/) with strict mode
+- [Tailwind CSS](https://tailwindcss.com/) with custom design tokens
+- [shadcn/ui](https://ui.shadcn.com/) primitives + [Radix UI](https://www.radix-ui.com/)
+- [Lucide](https://lucide.dev/) icons
+
+**Data Visualization**
+- [Recharts](https://recharts.org/) — funnel, radar, scatter, area, line, bar, radial charts
+
+**State & Logic**
+- [Zustand](https://github.com/pmndrs/zustand) with `persist` middleware (localStorage)
+- Deterministic, rule-based simulation engine — no external API calls, fully reproducible
+
+**Tooling**
+- [class-variance-authority](https://cva.style/) for component variants
+- `tailwind-merge` + `clsx` for safe class composition
+
+## 5. Product Management Value
+
+For PMs, ProductTwin AI demonstrates the difference between **opinion-led** and **evidence-led** decision making:
+
+- **Translate intuition into trade-offs.** "Onboarding feels too long" becomes "reducing steps from 6 → 3 lifts activation by 14pp and reduces early churn by 25%."
+- **Rank alternatives systematically.** RICE scoring with a live recommendation engine surfaces the highest-leverage feature — not the loudest one.
+- **Quantify upstream vs downstream levers.** The simulator makes it obvious when fixing activation is worth more than scaling acquisition spend.
+- **Communicate strategy executive-ready.** The Final Recommendations report is structured like a consulting deliverable: executive summary, diagnosis, 30/90-day plans, survival score.
+
+## 6. Business Analysis Value
+
+For business analysts, the application demonstrates structured analytical thinking:
+
+- **Multi-dimensional scoring** — composite health, RICE prioritization, enterprise readiness score — all decomposed into weighted components.
+- **Sensitivity analysis** — the simulator probes each lever individually and ranks by health-score delta to identify the highest-impact action.
+- **Risk modeling** — framework overlays (GDPR, HIPAA, etc.) act as conditional modifiers on baseline risk scores, producing dynamic readiness assessments.
+- **Funnel + cohort thinking** — KPI dashboard breaks the user journey into Acquisition → Activation → Retention → Revenue with strategic interpretation at each stage.
+- **Mock data, real frameworks** — the data is illustrative, but the analytical patterns (RICE, LTV/CAC, retention cohorts, compliance gap analysis) are production-grade.
+
+## 7. Future Improvements
+
+- [ ] Connect to live data sources (Segment, Mixpanel, Stripe) for real-product simulation
+- [ ] Save and compare multiple scenarios side-by-side
+- [ ] Monte Carlo simulation with uncertainty bands on each projection
+- [ ] LLM-powered narrative generation for the Final Report (with prompt caching)
+- [ ] Multi-product portfolio view for VCs and PE firms
+- [ ] Server-rendered PDF export with embedded charts (currently uses `window.print()`)
+- [ ] Authentication and multi-user workspaces
+- [ ] Versioned audit history with diff view between assessments
+
+## 8. Screenshots
+
+> Screenshots and a short demo video go here.
+
+```
+docs/
+└── screenshots/
+    ├── 01-dashboard.png
+    ├── 02-audit-report.png
+    ├── 03-simulator.png
+    ├── 04-kpi-dashboard.png
+    ├── 05-roadmap.png
+    ├── 06-risk-compliance.png
+    └── 07-final-report.png
+```
+
+## 9. Getting Started
 
 ```bash
-cd producttwin-ai
+git clone https://github.com/lebgdecasa/data-git.git
+cd data-git/producttwin-ai
 npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+**Build for production:**
 ```bash
-npm run typecheck   # tsc --noEmit
-npm run lint        # next lint
-npm run build       # production build
+npm run build
+npm start
 ```
 
-## Design direction
+## 10. LinkedIn Post Template
 
-- Dark mode by default
-- Glassmorphism cards with subtle gradients
-- Premium SaaS feel — executive, restrained, blue/purple accents
-- Smooth radial backdrops and grid background
-- Responsive down to mobile, optimized for desktop board-deck use
+Use this template when sharing the project:
+
+```
+I built ProductTwin AI, an AI-powered product decision simulator for PMs and business analysts.
+
+The idea is simple: before shipping a product decision, simulate its impact.
+
+It helps analyze:
+- churn
+- activation
+- pricing
+- retention
+- roadmap priority
+- compliance risk
+- product health
+
+The goal was to combine product management, business analysis, AI, and
+decision intelligence into one portfolio project.
+
+Built with: Next.js 14 · TypeScript · Tailwind · Recharts · Zustand
+No external APIs — fully deterministic simulation engine.
+
+🔗 [Live demo]   📁 [GitHub]   🎥 [Demo video]
+
+#productmanagement #businessanalysis #productstrategy #startups #ai
+```
+
+---
 
 ## Disclaimer
 
-All numbers are simulated for portfolio purposes. Nothing here is connected to real billing, real customers, or a real backend.
+This project uses **simulated data for portfolio demonstration purposes**. The compliance, risk, and regulatory analysis is a strategic readiness simulation — **not a legal compliance certification**. Nothing in this project constitutes legal, regulatory, or financial advice. For real compliance assessments, consult qualified legal counsel and certified compliance professionals.
+
+## License
+
+MIT — feel free to fork, learn from, and adapt.

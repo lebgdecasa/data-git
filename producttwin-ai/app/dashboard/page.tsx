@@ -101,7 +101,7 @@ const RISK_RADAR = [
 ];
 
 /* ─── SCORE DERIVATIONS ─────────────────────── */
-const HEALTH_SCORE = 49;
+const HEALTH_SCORE = 67;
 const PMF_SCORE = 44;
 const REVENUE_EFF = 78;
 const RETENTION_RISK = 28;
