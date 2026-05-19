@@ -39,7 +39,13 @@ import {
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { NextStep } from "@/components/layout/next-step";
+import { EmptyProfile } from "@/components/layout/empty-profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useProfileStore, isProfilePopulated } from "@/lib/profile-store";
+import {
+  deriveMrrHistory, deriveChurnHistory, deriveFunnel, deriveDiagnoses,
+} from "@/lib/derive";
+import { calculateHealthScore, calculateRiskScore } from "@/lib/profile";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -269,15 +275,80 @@ const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any
   );
 };
 
+/* ─── ICON MAP for dynamic diagnoses ───────────────────────────── */
+const DIAGNOSIS_ICON_MAP: Record<string, any> = {
+  TrendingUp, Zap, TrendingDown, ShieldAlert, Map, Activity,
+};
+
 /* ─── PAGE ──────────────────────────────────── */
 export default function DashboardPage() {
+  const profile = useProfileStore((s) => s.profile);
+  const populated = isProfilePopulated(profile);
+
+  if (!populated) {
+    return (
+      <AppShell>
+        <PageHeader
+          step={2}
+          eyebrow="Business Audit"
+          title="Your strategic diagnosis"
+          description="A scored snapshot of your product's health. You need to load a product profile first."
+        />
+        <EmptyProfile
+          pageLabel="Business Audit"
+          pageDescription="The dashboard is calibrated to your saved product data."
+        />
+      </AppShell>
+    );
+  }
+
+  // ─── Derived from saved profile ───
+  const HEALTH_SCORE = calculateHealthScore({
+    mrr: profile.mrr, churn: profile.churnRate, activation: profile.activationRate,
+    retention30: profile.retentionRate30, ltv: profile.ltv, cac: profile.cac,
+  });
+  const RETENTION_RISK = calculateRiskScore(profile);
+  const PMF_SCORE = Math.round((profile.activationRate + profile.retentionRate30) / 2);
+  const REVENUE_EFF = profile.cac > 0 ? Math.min(100, Math.round((profile.ltv / profile.cac) * 10)) : 0;
+  const MRR_DATA_DYN = deriveMrrHistory(profile);
+  const CHURN_DATA_DYN = deriveChurnHistory(profile);
+  const FUNNEL_DATA_DYN = deriveFunnel(profile);
+  const RISK_RADAR_DYN = [
+    { axis: "Revenue",     value: REVENUE_EFF },
+    { axis: "Activation",  value: profile.activationRate },
+    { axis: "Retention",   value: profile.retentionRate30 },
+    { axis: "Compliance",  value: profile.complianceReadiness },
+    { axis: "Roadmap",     value: Math.max(0, 100 - profile.roadmapComplexity) },
+    { axis: "PMF Signal",  value: PMF_SCORE },
+  ];
+  const DIAGNOSES_DYN = deriveDiagnoses(profile).map((d) => ({
+    icon: DIAGNOSIS_ICON_MAP[d.iconName] || Activity,
+    tone: d.tone, title: d.title, body: d.body,
+  }));
+
+  const PRODUCT_DYN = {
+    name: profile.productName,
+    industry: profile.industry || "—",
+    model: profile.productType || "—",
+    stage: profile.productType || "—",
+    users: profile.payingUsers,
+    mrr: profile.mrr,
+    cac: profile.cac,
+    ltv: profile.ltv,
+    churnRate: profile.churnRate,
+    activationRate: profile.activationRate,
+    retention30: profile.retentionRate30,
+    complianceReadiness: profile.complianceReadiness,
+    roadmapComplexity: profile.roadmapComplexity,
+  };
+
   return (
     <AppShell>
       <PageHeader
         step={2}
         eyebrow="Business Audit"
         title="Your strategic diagnosis"
-        description="A scored snapshot of your product's health across monetization, activation, retention, compliance, and execution. The biggest bottleneck is highlighted below."
+        description={`A scored snapshot of ${profile.productName}'s health across monetization, activation, retention, compliance, and execution.`}
       />
 
       {/* ── PRODUCT IDENTITY HEADER ── */}
@@ -291,11 +362,11 @@ export default function DashboardPage() {
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-2xl font-semibold tracking-tight">{PRODUCT.name}</h2>
-              <Badge variant="secondary">{PRODUCT.stage}</Badge>
-              <Badge variant="info">{PRODUCT.model}</Badge>
+              <h2 className="text-2xl font-semibold tracking-tight">{PRODUCT_DYN.name}</h2>
+              <Badge variant="secondary">{PRODUCT_DYN.stage}</Badge>
+              <Badge variant="info">{PRODUCT_DYN.model}</Badge>
             </div>
-            <p className="text-sm text-muted-foreground mt-0.5">{PRODUCT.industry} · {PRODUCT.users.toLocaleString()} monthly users · MRR ${(PRODUCT.mrr / 1000).toFixed(0)}k</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{PRODUCT_DYN.industry} · {PRODUCT_DYN.users.toLocaleString()} monthly users · MRR ${(PRODUCT.mrr / 1000).toFixed(0)}k</p>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -444,7 +515,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={MRR_DATA}>
+                <AreaChart data={MRR_DATA_DYN}>
                   <defs>
                     <linearGradient id="mrr-fill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#818cf8" stopOpacity={0.55} />
@@ -475,7 +546,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={CHURN_DATA}>
+                  <AreaChart data={CHURN_DATA_DYN}>
                     <defs>
                       <linearGradient id="churn-fill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.45} />
@@ -499,7 +570,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-muted-foreground">Monthly · top to bottom</p>
               </CardHeader>
               <CardContent className="pt-2 space-y-3">
-                {FUNNEL_DATA.map((f, i) => (
+                {FUNNEL_DATA_DYN.map((f, i) => (
                   <div key={f.stage}>
                     <div className="flex items-center justify-between text-xs mb-1.5">
                       <div className="flex items-center gap-2">
@@ -517,7 +588,7 @@ export default function DashboardPage() {
                       <div
                         className="h-full rounded-full transition-all duration-700"
                         style={{
-                          width: `${(f.value / FUNNEL_DATA[0].value) * 100}%`,
+                          width: `${(f.value / FUNNEL_DATA_DYN[0].value) * 100}%`,
                           background: f.color,
                         }}
                       />
@@ -540,7 +611,7 @@ export default function DashboardPage() {
               <div className="grid sm:grid-cols-2 gap-6 items-center">
                 <div className="h-[240px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={RISK_RADAR} outerRadius="75%">
+                    <RadarChart data={RISK_RADAR_DYN} outerRadius="75%">
                       <PolarGrid stroke="rgba(255,255,255,0.06)" />
                       <PolarAngleAxis dataKey="axis" stroke="rgba(255,255,255,0.55)" fontSize={11} />
                       <Radar dataKey="value" stroke="#a78bfa" fill="#a78bfa" fillOpacity={0.3} strokeWidth={2} />
@@ -549,7 +620,7 @@ export default function DashboardPage() {
                   </ResponsiveContainer>
                 </div>
                 <div className="space-y-2.5">
-                  {RISK_RADAR.map((r) => {
+                  {RISK_RADAR_DYN.map((r) => {
                     const tone = r.value >= 65 ? "good" : r.value >= 45 ? "warn" : "bad";
                     const bar = tone === "good" ? "from-emerald-500 to-emerald-400" : tone === "warn" ? "from-amber-500 to-amber-400" : "from-rose-500 to-rose-400";
                     return (
@@ -596,7 +667,7 @@ export default function DashboardPage() {
               </p>
 
               <div className="space-y-2.5 mt-1">
-                {DIAGNOSES.map((d) => {
+                {DIAGNOSES_DYN.map((d) => {
                   const Icon = d.icon;
                   const t = TONE_MAP[d.tone as keyof typeof TONE_MAP];
                   return (

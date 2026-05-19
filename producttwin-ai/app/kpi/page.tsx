@@ -21,6 +21,8 @@ import {
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { NextStep } from "@/components/layout/next-step";
+import { EmptyProfile } from "@/components/layout/empty-profile";
+import { useProfileStore, isProfilePopulated } from "@/lib/profile-store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -187,13 +189,33 @@ const fmtK = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`;
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function KpiPage() {
+  const profile = useProfileStore((s) => s.profile);
+  const populated = isProfilePopulated(profile);
+
+  if (!populated) {
+    return (
+      <AppShell>
+        <PageHeader
+          step={4}
+          eyebrow="Impact Results"
+          title="Your full impact analysis"
+          description="A 5-group KPI breakdown across acquisition, activation, retention, revenue, and product. You need to load a product profile first."
+        />
+        <EmptyProfile
+          pageLabel="Impact Results"
+          pageDescription="The KPI dashboard contextualises your metrics against industry benchmarks."
+        />
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell>
       <PageHeader
         step={4}
         eyebrow="Impact Results"
         title="Your full impact analysis"
-        description="A 5-group KPI breakdown across acquisition, activation, retention, revenue, and product — with strategic interpretation under every chart."
+        description={`KPI breakdown across acquisition, activation, retention, revenue, and product. Benchmarks are calibrated for ${profile.industry || "your industry"}.`}
       />
       <div className="space-y-10">
 

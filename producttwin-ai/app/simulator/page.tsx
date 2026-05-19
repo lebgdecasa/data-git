@@ -71,12 +71,19 @@ export default function SimulatorPage() {
   const profile = useProfileStore((s) => s.profile);
   const updateProfile = useProfileStore((s) => s.updateProfile);
   const loadDemo = useProfileStore((s) => s.loadDemo);
+  const lastScenario = useProfileStore((s) => s.lastScenario);
+  const setLastScenario = useProfileStore((s) => s.setLastScenario);
+  const savedScenarios = useProfileStore((s) => s.savedScenarios);
+  const saveScenario = useProfileStore((s) => s.saveScenario);
+  const deleteScenario = useProfileStore((s) => s.deleteScenario);
 
   const populated = isProfilePopulated(profile);
 
   const [inputs, setInputs] = useState<ScenarioInputs>(() => defaultScenarioInputs(profile));
-  const [results, setResults] = useState<ScenarioResults | null>(null);
+  const [results, setResults] = useState<ScenarioResults | null>(() => lastScenario);
   const [showFormulas, setShowFormulas] = useState(false);
+  const [showScenarios, setShowScenarios] = useState(false);
+  const [scenarioName, setScenarioName] = useState("");
 
   React.useEffect(() => {
     setInputs((prev) => ({
@@ -100,7 +107,9 @@ export default function SimulatorPage() {
 
   const handleRun = () => {
     if (!populated) return;
-    setResults(runScenario(profile, inputs));
+    const r = runScenario(profile, inputs);
+    setResults(r);
+    setLastScenario(r);
     setTimeout(() => {
       document.getElementById("scenario-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
@@ -109,6 +118,20 @@ export default function SimulatorPage() {
   const handleReset = () => {
     setInputs(defaultScenarioInputs(profile));
     setResults(null);
+    setLastScenario(null);
+  };
+
+  const handleSaveScenario = () => {
+    if (!results) return;
+    const name = scenarioName.trim() || `Scenario ${savedScenarios.length + 1}`;
+    saveScenario(name, inputs, results);
+    setScenarioName("");
+  };
+
+  const handleLoadScenario = (s: typeof savedScenarios[number]) => {
+    setInputs(s.inputs);
+    setResults(s.results);
+    setLastScenario(s.results);
   };
 
   return (
@@ -351,10 +374,59 @@ export default function SimulatorPage() {
         {/* ── Locked Results ──────────────────────────────────────── */}
         {results && (
           <div id="scenario-results" className="space-y-6 fade-up">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="text-lg font-semibold text-white">Simulation Results</h2>
-              <span className="text-[11px] text-zinc-500">Locked from your last Run</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Input
+                  type="text"
+                  placeholder="Name this scenario (optional)"
+                  value={scenarioName}
+                  onChange={(e) => setScenarioName(e.target.value)}
+                  className="h-8 w-48 text-xs"
+                />
+                <Button size="sm" variant="outline" onClick={handleSaveScenario}>
+                  Save scenario
+                </Button>
+                <span className="text-[11px] text-zinc-500">Locked from your last Run</span>
+              </div>
             </div>
+
+            {/* Saved scenarios drawer */}
+            {savedScenarios.length > 0 && (
+              <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+                <button
+                  type="button"
+                  onClick={() => setShowScenarios((v) => !v)}
+                  className="w-full flex items-center justify-between text-left"
+                >
+                  <p className="text-sm font-semibold text-white">
+                    Saved scenarios <span className="text-zinc-500 font-normal">({savedScenarios.length})</span>
+                  </p>
+                  {showScenarios ? <ChevronUp className="h-4 w-4 text-zinc-400" /> : <ChevronDown className="h-4 w-4 text-zinc-400" />}
+                </button>
+                {showScenarios && (
+                  <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {savedScenarios.map((s) => (
+                      <div key={s.id} className="surface-subtle p-3 flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-white truncate">{s.name}</p>
+                          <p className="text-[11px] text-zinc-500 tabular-numeric">
+                            {fmtCurrency(s.results.after.mrr)} MRR · {s.results.after.churn.toFixed(1)}% churn · health {s.results.after.healthScore}
+                          </p>
+                          <p className="text-[10px] text-zinc-600 mt-0.5">
+                            {new Date(s.savedAt).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <Button size="sm" variant="outline" onClick={() => handleLoadScenario(s)}>Load</Button>
+                          <Button size="sm" variant="ghost" onClick={() => deleteScenario(s.id)}>Delete</Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {results.deltas.map((d) => (
