@@ -23,6 +23,7 @@ import {
   type ProductProfile,
   type ComplianceSensitivity,
 } from "@/lib/profile";
+import { computeCompositeBusinessScore, generateActionItems } from "@/lib/sections";
 
 // ─── Field helpers ────────────────────────────────────────────────────────────
 
@@ -72,6 +73,8 @@ export default function AuditPage() {
   const setProfile = useProfileStore((s) => s.setProfile);
   const saveAudit = useProfileStore((s) => s.saveAudit);
   const clearAudit = useProfileStore((s) => s.clearAudit);
+  const addActionItems = useProfileStore((s) => s.addActionItems);
+  const logKpiSnapshot = useProfileStore((s) => s.logKpiSnapshot);
 
   const [loading, setLoading] = useState(false);
 
@@ -96,7 +99,11 @@ export default function AuditPage() {
     setLoading(true);
     setTimeout(() => {
       const result = generateAudit(profile);
-      saveAudit(result);
+      const compositeScore = computeCompositeBusinessScore(profile);
+      saveAudit(result, compositeScore);
+      logKpiSnapshot();
+      const drafts = generateActionItems(profile);
+      addActionItems(drafts);
       setLoading(false);
       setTimeout(() => {
         document.getElementById("audit-report")?.scrollIntoView({ behavior: "smooth", block: "start" });

@@ -1,737 +1,585 @@
 "use client";
 
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  Radar,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+  Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Line, LineChart,
 } from "recharts";
 import {
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  ArrowUpRight,
-  BarChart3,
-  Brain,
-  CheckCircle2,
-  ChevronRight,
-  Gauge,
-  Map,
-  ShieldAlert,
-  ShieldCheck,
-  Sparkles,
-  TrendingDown,
-  TrendingUp,
-  Users,
-  Zap,
+  Megaphone, ShoppingBag, Sparkles, Settings, Heart, DollarSign,
+  TrendingUp, TrendingDown, ShieldCheck, Activity, ArrowRight, ArrowUp,
+  ArrowDown, Minus, Plus, Check, X, Trash2, ListChecks, Clock, Target,
+  Flame, BarChart3,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { NextStep } from "@/components/layout/next-step";
 import { EmptyProfile } from "@/components/layout/empty-profile";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useProfileStore, isProfilePopulated } from "@/lib/profile-store";
-import {
-  deriveMrrHistory, deriveChurnHistory, deriveFunnel, deriveDiagnoses,
-} from "@/lib/derive";
-import { calculateHealthScore, calculateRiskScore } from "@/lib/profile";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { useProfileStore, isProfilePopulated } from "@/lib/profile-store";
+import {
+  computeAllSectionScores, computeCompositeBusinessScore, SECTIONS, type SectionId,
+} from "@/lib/sections";
+import { calculateRiskScore } from "@/lib/profile";
 
-/* ─── MOCK DATA ─────────────────────────────── */
-const PRODUCT = {
-  name: "HealthTrack AI",
-  industry: "Digital Health",
-  model: "SaaS",
-  stage: "Growth",
-  users: 12_500,
-  mrr: 48_000,
-  cac: 42,
-  ltv: 420,
-  churnRate: 7.5,
-  activationRate: 38,
-  retention30: 42,
-  complianceReadiness: 61,
-  roadmapComplexity: 74,
+const ICON_BY_NAME: Record<string, React.ElementType> = {
+  Megaphone, ShoppingBag, Sparkles, Settings, Heart,
+  DollarSign, TrendingUp, ShieldCheck,
 };
 
-const MRR_DATA = [
-  { month: "Jan", mrr: 28_000 },
-  { month: "Feb", mrr: 30_500 },
-  { month: "Mar", mrr: 31_800 },
-  { month: "Apr", mrr: 33_200 },
-  { month: "May", mrr: 35_500 },
-  { month: "Jun", mrr: 37_100 },
-  { month: "Jul", mrr: 39_400 },
-  { month: "Aug", mrr: 41_800 },
-  { month: "Sep", mrr: 43_200 },
-  { month: "Oct", mrr: 44_900 },
-  { month: "Nov", mrr: 46_300 },
-  { month: "Dec", mrr: 48_000 },
-];
+// ─── Page ─────────────────────────────────────────────────────────────────
 
-const CHURN_DATA = [
-  { month: "Jul", churn: 6.2 },
-  { month: "Aug", churn: 7.1 },
-  { month: "Sep", churn: 6.8 },
-  { month: "Oct", churn: 7.9 },
-  { month: "Nov", churn: 7.3 },
-  { month: "Dec", churn: 7.5 },
-];
-
-const FUNNEL_DATA = [
-  { stage: "Visitors", value: 85_000, pct: 100, color: "#6366f1" },
-  { stage: "Signups", value: 12_500, pct: 14.7, color: "#8b5cf6" },
-  { stage: "Activated", value: 4_750, pct: 38, color: "#a855f7" },
-  { stage: "Retained D30", value: 1_995, pct: 42, color: "#d946ef" },
-];
-
-const RISK_RADAR = [
-  { axis: "Revenue", value: 82 },
-  { axis: "Activation", value: 38 },
-  { axis: "Retention", value: 35 },
-  { axis: "Compliance", value: 61 },
-  { axis: "Roadmap", value: 26 },
-  { axis: "PMF Signal", value: 48 },
-];
-
-/* ─── SCORE DERIVATIONS ─────────────────────── */
-const HEALTH_SCORE = 67;
-const PMF_SCORE = 44;
-const REVENUE_EFF = 78;
-const RETENTION_RISK = 28;
-
-const DIAGNOSES = [
-  {
-    icon: TrendingUp,
-    tone: "good",
-    title: "Promising monetization",
-    body: "LTV:CAC ratio of 10x is exceptional. Revenue efficiency is a genuine competitive moat - protect it as you scale.",
-  },
-  {
-    icon: Zap,
-    tone: "bad",
-    title: "Activation is critically weak",
-    body: "Only 38% of new signups reach the aha moment. This is the single highest-leverage fix: 10 points here unlocks compounding retention.",
-  },
-  {
-    icon: TrendingDown,
-    tone: "bad",
-    title: "Churn is unsustainably high",
-    body: "7.5% monthly churn means ~62% annual logo loss. At this rate, growth is a treadmill - every new user barely replaces one lost.",
-  },
-  {
-    icon: ShieldAlert,
-    tone: "warn",
-    title: "Compliance blocks enterprise",
-    body: "61% compliance readiness closes the door on any deal above $10K ACV. SOC 2 Type I is a 90-day priority, not a roadmap item.",
-  },
-  {
-    icon: Map,
-    tone: "warn",
-    title: "Roadmap needs hard cuts",
-    body: "Complexity at 74% is a velocity killer. Freeze everything outside the top 3 bets - activation, churn, and compliance - this quarter.",
-  },
-];
-
-const TONE_MAP = {
-  good: {
-    icon: "text-emerald-300",
-    border: "border-emerald-500/20",
-    bg: "bg-emerald-500/[0.06]",
-    dot: "bg-emerald-400",
-  },
-  warn: {
-    icon: "text-amber-300",
-    border: "border-amber-500/20",
-    bg: "bg-amber-500/[0.06]",
-    dot: "bg-amber-400",
-  },
-  bad: {
-    icon: "text-rose-300",
-    border: "border-rose-500/20",
-    bg: "bg-rose-500/[0.06]",
-    dot: "bg-rose-400",
-  },
-};
-
-/* ─── HELPERS ───────────────────────────────── */
-function ScoreRing({
-  score,
-  size = 96,
-  strokeWidth = 8,
-  color,
-}: {
-  score: number;
-  size?: number;
-  strokeWidth?: number;
-  color: string;
-}) {
-  const r = (size - strokeWidth) / 2;
-  const circ = 2 * Math.PI * r;
-  const dash = (score / 100) * circ;
-  return (
-    <svg width={size} height={size} className="-rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
-      <circle
-        cx={size / 2} cy={size / 2} r={r} fill="none"
-        stroke={color} strokeWidth={strokeWidth}
-        strokeDasharray={`${dash} ${circ - dash}`}
-        strokeLinecap="round"
-        style={{ transition: "stroke-dasharray 1s ease" }}
-      />
-    </svg>
-  );
-}
-
-function MetricCard({
-  title,
-  value,
-  sub,
-  score,
-  tone,
-  icon: Icon,
-  detail,
-}: {
-  title: string;
-  value: string;
-  sub?: string;
-  score: number;
-  tone: "good" | "warn" | "bad";
-  icon: any;
-  detail?: string;
-}) {
-  const colors = {
-    good: { ring: "#22c55e", bg: "from-emerald-500/10", badge: "success" as const },
-    warn: { ring: "#f59e0b", bg: "from-amber-500/10", badge: "warning" as const },
-    bad: { ring: "#f43f5e", bg: "from-rose-500/10", badge: "destructive" as const },
-  }[tone];
-
-  return (
-    <Card className={cn("relative overflow-hidden group hover:-translate-y-0.5 transition-all duration-300 hover:shadow-xl hover:border-white/[0.1]")}>
-      <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500", colors.bg, "to-transparent")} />
-      <CardContent className="relative p-5">
-        <div className="flex items-start justify-between">
-          <div className="h-9 w-9 rounded-lg bg-white/[0.04] border border-white/[0.06] grid place-items-center">
-            <Icon className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <Badge variant={colors.badge} className="text-[10px]">
-            {score}/100
-          </Badge>
-        </div>
-        <div className="mt-4 flex items-end justify-between gap-3">
-          <div>
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{title}</p>
-            <p className="text-2xl font-semibold mt-1 tracking-tight">{value}</p>
-            {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
-            {detail && <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed">{detail}</p>}
-          </div>
-          <div className="relative shrink-0">
-            <ScoreRing score={score} size={52} strokeWidth={5} color={colors.ring} />
-            <div className="absolute inset-0 flex items-center justify-center rotate-90">
-              <span className="text-[11px] font-bold tabular-nums">{score}</span>
-            </div>
-          </div>
-        </div>
-        <Progress
-          value={score}
-          className="h-1 mt-4"
-          indicatorClassName={cn(
-            tone === "good" ? "from-emerald-500 to-emerald-400" :
-            tone === "warn" ? "from-amber-500 to-amber-400" :
-            "from-rose-500 to-rose-400"
-          )}
-        />
-      </CardContent>
-    </Card>
-  );
-}
-
-const CustomTooltip = ({ active, payload, label, prefix = "", suffix = "" }: any) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded-lg border border-white/10 bg-[hsl(224,44%,10%)]/95 backdrop-blur-md px-3 py-2 shadow-2xl text-xs">
-      <p className="text-muted-foreground mb-1">{label}</p>
-      {payload.map((p: any, i: number) => (
-        <div key={i} className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full" style={{ background: p.color || p.fill }} />
-          <span className="font-medium">{prefix}{typeof p.value === "number" ? p.value.toLocaleString() : p.value}{suffix}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-/* ─── ICON MAP for dynamic diagnoses ───────────────────────────── */
-const DIAGNOSIS_ICON_MAP: Record<string, any> = {
-  TrendingUp, Zap, TrendingDown, ShieldAlert, Map, Activity,
-};
-
-/* ─── PAGE ──────────────────────────────────── */
-export default function DashboardPage() {
+export default function WorkspaceHomePage() {
   const profile = useProfileStore((s) => s.profile);
+  const auditHistory = useProfileStore((s) => s.auditHistory);
+  const kpiHistory = useProfileStore((s) => s.kpiHistory);
+  const actionItems = useProfileStore((s) => s.actionItems);
+  const logKpiSnapshot = useProfileStore((s) => s.logKpiSnapshot);
+  const toggleActionItem = useProfileStore((s) => s.toggleActionItem);
+  const addManualActionItem = useProfileStore((s) => s.addManualActionItem);
+  const removeActionItem = useProfileStore((s) => s.removeActionItem);
+  const clearCompletedActionItems = useProfileStore((s) => s.clearCompletedActionItems);
+
   const populated = isProfilePopulated(profile);
+
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [filter, setFilter] = useState<"open" | "all" | "done">("open");
 
   if (!populated) {
     return (
       <AppShell>
         <PageHeader
           step={2}
-          eyebrow="Business Audit"
-          title="Your strategic diagnosis"
-          description="A scored snapshot of your product's health. You need to load a product profile first."
+          eyebrow="Workspace Home"
+          title="Your operating dashboard"
+          description="Track business health, run section audits, log KPIs, and complete action items. You need to load a product profile first."
         />
         <EmptyProfile
-          pageLabel="Business Audit"
-          pageDescription="The dashboard is calibrated to your saved product data."
+          pageLabel="Workspace Home"
+          pageDescription="This is where you'll return weekly to monitor progress and complete improvement tasks."
         />
       </AppShell>
     );
   }
 
-  // ─── Derived from saved profile ───
-  const HEALTH_SCORE = calculateHealthScore({
-    mrr: profile.mrr, churn: profile.churnRate, activation: profile.activationRate,
-    retention30: profile.retentionRate30, ltv: profile.ltv, cac: profile.cac,
-  });
-  const RETENTION_RISK = calculateRiskScore(profile);
-  const PMF_SCORE = Math.round((profile.activationRate + profile.retentionRate30) / 2);
-  const REVENUE_EFF = profile.cac > 0 ? Math.min(100, Math.round((profile.ltv / profile.cac) * 10)) : 0;
-  const MRR_DATA_DYN = deriveMrrHistory(profile);
-  const CHURN_DATA_DYN = deriveChurnHistory(profile);
-  const FUNNEL_DATA_DYN = deriveFunnel(profile);
-  const RISK_RADAR_DYN = [
-    { axis: "Revenue",     value: REVENUE_EFF },
-    { axis: "Activation",  value: profile.activationRate },
-    { axis: "Retention",   value: profile.retentionRate30 },
-    { axis: "Compliance",  value: profile.complianceReadiness },
-    { axis: "Roadmap",     value: Math.max(0, 100 - profile.roadmapComplexity) },
-    { axis: "PMF Signal",  value: PMF_SCORE },
-  ];
-  const DIAGNOSES_DYN = deriveDiagnoses(profile).map((d) => ({
-    icon: DIAGNOSIS_ICON_MAP[d.iconName] || Activity,
-    tone: d.tone, title: d.title, body: d.body,
+  // ── Compute derived state ────────────────────────────────────────
+  const compositeScore = computeCompositeBusinessScore(profile);
+  const previousScore = auditHistory.length > 1 ? auditHistory[1].compositeScore : null;
+  const scoreDelta = previousScore !== null ? compositeScore - previousScore : null;
+  const sectionScores = computeAllSectionScores(profile);
+  const riskScore = calculateRiskScore(profile);
+
+  const lastAudit = auditHistory[0];
+  const daysSinceAudit = lastAudit
+    ? Math.round((Date.now() - lastAudit.createdAt) / (1000 * 60 * 60 * 24))
+    : null;
+
+  const openItems = actionItems.filter((a) => a.status === "open");
+  const doneItems = actionItems.filter((a) => a.status === "done");
+  const visibleItems = filter === "open" ? openItems
+    : filter === "done" ? doneItems
+    : actionItems;
+
+  // KPI sparkline data (from kpiHistory, oldest first for chart)
+  const kpiSparkData = [...kpiHistory].reverse();
+  const mrrTrend = kpiSparkData.length >= 2 ? kpiSparkData[kpiSparkData.length - 1].mrr - kpiSparkData[0].mrr : 0;
+  const churnTrend = kpiSparkData.length >= 2 ? kpiSparkData[kpiSparkData.length - 1].churn - kpiSparkData[0].churn : 0;
+  const auditTrend = auditHistory.slice(0, 8).reverse().map((a, i) => ({
+    idx: i + 1,
+    score: a.compositeScore,
+    label: new Date(a.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
   }));
 
-  const PRODUCT_DYN = {
-    name: profile.productName,
-    industry: profile.industry || "—",
-    model: profile.productType || "—",
-    stage: profile.productType || "—",
-    users: profile.payingUsers,
-    mrr: profile.mrr,
-    cac: profile.cac,
-    ltv: profile.ltv,
-    churnRate: profile.churnRate,
-    activationRate: profile.activationRate,
-    retention30: profile.retentionRate30,
-    complianceReadiness: profile.complianceReadiness,
-    roadmapComplexity: profile.roadmapComplexity,
+  // Days since last KPI log
+  const lastKpi = kpiHistory[0];
+  const daysSinceKpiLog = lastKpi
+    ? Math.round((Date.now() - lastKpi.date) / (1000 * 60 * 60 * 24))
+    : null;
+  const kpiLogStale = daysSinceKpiLog === null || daysSinceKpiLog >= 7;
+
+  const handleAddTask = () => {
+    if (!newTaskTitle.trim()) return;
+    addManualActionItem(newTaskTitle, "med");
+    setNewTaskTitle("");
   };
 
   return (
     <AppShell>
       <PageHeader
         step={2}
-        eyebrow="Business Audit"
-        title="Your strategic diagnosis"
-        description={`A scored snapshot of ${profile.productName}'s health across monetization, activation, retention, compliance, and execution.`}
+        eyebrow="Workspace Home"
+        title={`${profile.productName} · operating dashboard`}
+        description="Your weekly business operating system. Track section scores, complete improvement tasks, and log KPIs to build trend data."
+        actions={
+          <Link href="/audit">
+            <Button size="sm" variant="outline">
+              <Activity className="h-3.5 w-3.5" />
+              Re-run audit
+            </Button>
+          </Link>
+        }
       />
 
-      {/* ── PRODUCT IDENTITY HEADER ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-5 rounded-2xl glass">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="absolute inset-0 bg-indigo-500/40 blur-xl rounded-xl" />
-            <div className="relative h-14 w-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center shadow-lg">
-              <Activity className="h-6 w-6 text-white" />
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-2xl font-semibold tracking-tight">{PRODUCT_DYN.name}</h2>
-              <Badge variant="secondary">{PRODUCT_DYN.stage}</Badge>
-              <Badge variant="info">{PRODUCT_DYN.model}</Badge>
-            </div>
-            <p className="text-sm text-muted-foreground mt-0.5">{PRODUCT_DYN.industry} · {PRODUCT_DYN.users.toLocaleString()} monthly users · MRR ${(PRODUCT.mrr / 1000).toFixed(0)}k</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Link href="/simulator">
-            <Button variant="secondary" size="sm">
-              <Sparkles className="h-3.5 w-3.5" />
-              Run Scenario
-            </Button>
-          </Link>
-          <Link href="/audit">
-            <Button variant="secondary" size="sm">
-              <BarChart3 className="h-3.5 w-3.5" />
-              Audit Product
-            </Button>
-          </Link>
-          <Link href="/roadmap">
-            <Button size="sm">
-              <Map className="h-3.5 w-3.5" />
-              Prioritize Roadmap
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <div className="space-y-8">
 
-      {/* ── OVERALL HEALTH SCORE ── */}
-      <div className="relative mb-6 rounded-2xl overflow-hidden glass p-6">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_left,rgba(124,58,237,0.18),transparent_55%)]" />
-        <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="relative shrink-0">
-            <ScoreRing score={HEALTH_SCORE} size={120} strokeWidth={10} color="#f59e0b" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center rotate-90">
-              <span className="text-3xl font-bold tabular-nums">{HEALTH_SCORE}</span>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground -mt-0.5">/ 100</span>
-            </div>
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-1.5">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Product Health Score</p>
-              <Badge variant="warning">Needs attention</Badge>
-            </div>
-            <p className="text-lg font-semibold leading-snug max-w-xl">
-              Strong monetization foundation undercut by poor activation and unsustainable churn.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2 leading-relaxed max-w-xl">
-              LTV:CAC of <span className="text-foreground font-medium">10x</span> is world-class, but 7.5% monthly churn is erasing top-of-funnel gains.
-              Two fixes - activation and churn - unlock compounding growth. Everything else is secondary.
-            </p>
-            <div className="flex flex-wrap gap-2 mt-4 justify-center md:justify-start">
-              {[
-                { l: "LTV : CAC", v: "10x", t: "good" },
-                { l: "Churn", v: "7.5%/mo", t: "bad" },
-                { l: "Activation", v: "38%", t: "bad" },
-                { l: "Compliance", v: "61%", t: "warn" },
-              ].map((s) => (
-                <div key={s.l} className="rounded-lg glass px-3 py-1.5 text-xs flex items-center gap-2">
-                  <span className={cn("h-1.5 w-1.5 rounded-full", s.t === "good" ? "bg-emerald-400" : s.t === "bad" ? "bg-rose-400" : "bg-amber-400")} />
-                  <span className="text-muted-foreground">{s.l}</span>
-                  <span className="font-medium">{s.v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+        {/* ── HERO: Composite Business Health ─────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-      {/* ── 6 KPI CARDS ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <MetricCard
-          title="Product Health Score"
-          value="49 / 100"
-          sub="Needs attention"
-          score={49}
-          tone="warn"
-          icon={Gauge}
-          detail="Monetization strong; activation + churn require urgent focus."
-        />
-        <MetricCard
-          title="PMF Readiness"
-          value="44 / 100"
-          sub="Below threshold"
-          score={44}
-          tone="bad"
-          icon={Brain}
-          detail="Weak activation and high churn signal unclear value delivery."
-        />
-        <MetricCard
-          title="Revenue Efficiency"
-          value="10x LTV:CAC"
-          sub="$420 LTV · $42 CAC"
-          score={78}
-          tone="good"
-          icon={TrendingUp}
-          detail="Outstanding unit economics. Scale acquisition carefully."
-        />
-        <MetricCard
-          title="Retention Risk"
-          value="7.5% churn"
-          sub="42% D30 retained"
-          score={28}
-          tone="bad"
-          icon={TrendingDown}
-          detail="At current churn, ~62% of logos lost annually."
-        />
-        <MetricCard
-          title="Compliance Risk"
-          value="61% ready"
-          sub="39% gap remaining"
-          score={61}
-          tone="warn"
-          icon={ShieldCheck}
-          detail="Blocks enterprise deals above $10K ACV without SOC 2."
-        />
-        <MetricCard
-          title="Execution Complexity"
-          value="74 / 100"
-          sub="High complexity"
-          score={26}
-          tone="bad"
-          icon={Map}
-          detail="Roadmap sprawl is throttling velocity. Cut 30% this sprint."
-        />
-      </div>
-
-      {/* ── CHARTS + AI PANEL ── */}
-      <div className="grid lg:grid-cols-3 gap-4">
-
-        {/* LEFT: charts column (2/3) */}
-        <div className="lg:col-span-2 space-y-4">
-
-          {/* MRR Growth */}
-          <Card>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>MRR Growth</CardTitle>
-                  <p className="text-xs text-muted-foreground mt-1">Jan-Dec · trailing 12 months</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-semibold">$48,000</div>
-                  <div className="flex items-center justify-end gap-1 text-xs text-emerald-300 mt-0.5">
-                    <ArrowUpRight className="h-3 w-3" />
-                    +71.4% YTD
+          {/* Composite score card */}
+          <Card className="glass-elevated lg:col-span-2">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between gap-6 flex-wrap">
+                <div className="flex items-center gap-5">
+                  <CompositeRing score={compositeScore} />
+                  <div>
+                    <p className="eyebrow mb-1">Composite Business Health</p>
+                    <div className="flex items-end gap-3 mb-1">
+                      <p className="text-4xl font-bold text-white tabular-numeric leading-none">{compositeScore}</p>
+                      <span className="text-sm text-zinc-500 mb-1">/ 100</span>
+                      {scoreDelta !== null && (
+                        <DeltaPill value={scoreDelta} suffix=" pts vs last audit" />
+                      )}
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-2">
+                      {daysSinceAudit === null
+                        ? "No audit history yet. Run your first audit to start tracking."
+                        : daysSinceAudit === 0
+                          ? "Audited today. Refresh weekly to monitor progress."
+                          : `Last audit ${daysSinceAudit} day${daysSinceAudit > 1 ? "s" : ""} ago. ${daysSinceAudit > 14 ? "Time for a fresh audit." : "Stay on schedule."}`}
+                    </p>
                   </div>
                 </div>
+
+                {/* Audit trend mini chart */}
+                {auditTrend.length >= 2 && (
+                  <div className="w-full md:w-56 h-20">
+                    <p className="eyebrow mb-1">Audit trend</p>
+                    <ResponsiveContainer width="100%" height={56}>
+                      <LineChart data={auditTrend}>
+                        <Line type="monotone" dataKey="score" stroke="#818cf8" strokeWidth={2} dot={{ r: 2 }} />
+                        <Tooltip
+                          contentStyle={{ background: "#1e1b4b", border: "1px solid #6366f180", borderRadius: 8, color: "#fff", fontSize: 11 }}
+                          formatter={(v: number) => [`${v}/100`, "Score"]}
+                          labelFormatter={(_, p) => (p?.[0]?.payload as any)?.label || ""}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </div>
-            </CardHeader>
-            <CardContent className="h-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={MRR_DATA_DYN}>
-                  <defs>
-                    <linearGradient id="mrr-fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#818cf8" stopOpacity={0.55} />
-                      <stop offset="100%" stopColor="#818cf8" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
-                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.35)" fontSize={11} tickLine={false} axisLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.35)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip content={<CustomTooltip prefix="$" />} />
-                  <Area type="monotone" dataKey="mrr" name="MRR" stroke="#a78bfa" fill="url(#mrr-fill)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "#a78bfa", strokeWidth: 0 }} />
-                </AreaChart>
-              </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          {/* Churn + Funnel side by side */}
-          <div className="grid sm:grid-cols-2 gap-4">
-
-            {/* Churn Trend */}
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm">Churn Trend</CardTitle>
-                  <Badge variant="destructive">High</Badge>
+          {/* KPI Logger / Health alerts */}
+          <Card className={kpiLogStale ? "border-amber-500/30" : "glass"}>
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3 mb-3">
+                <div className={`w-9 h-9 rounded-lg grid place-items-center shrink-0 ${kpiLogStale ? "bg-amber-500/15" : "bg-emerald-500/15"}`}>
+                  <Clock className={`h-4 w-4 ${kpiLogStale ? "text-amber-300" : "text-emerald-300"}`} />
                 </div>
-                <p className="text-xs text-muted-foreground">Last 6 months · % monthly</p>
-              </CardHeader>
-              <CardContent className="h-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={CHURN_DATA_DYN}>
-                    <defs>
-                      <linearGradient id="churn-fill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.45} />
-                        <stop offset="100%" stopColor="#f43f5e" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid stroke="rgba(255,255,255,0.04)" vertical={false} />
-                    <XAxis dataKey="month" stroke="rgba(255,255,255,0.35)" fontSize={10} tickLine={false} axisLine={false} />
-                    <YAxis stroke="rgba(255,255,255,0.35)" fontSize={10} tickLine={false} axisLine={false} domain={[5, 9]} tickFormatter={(v) => `${v}%`} />
-                    <Tooltip content={<CustomTooltip suffix="%" />} />
-                    <Area type="monotone" dataKey="churn" name="Churn" stroke="#fb7185" fill="url(#churn-fill)" strokeWidth={2} dot={{ r: 3, fill: "#fb7185", strokeWidth: 0 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Activation Funnel */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">Activation Funnel</CardTitle>
-                <p className="text-xs text-muted-foreground">Monthly · top to bottom</p>
-              </CardHeader>
-              <CardContent className="pt-2 space-y-3">
-                {FUNNEL_DATA_DYN.map((f, i) => (
-                  <div key={f.stage}>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
-                        <span className="text-muted-foreground">{f.stage}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium tabular-nums">{f.value.toLocaleString()}</span>
-                        {i > 0 && (
-                          <span className="text-[10px] text-muted-foreground">·{f.pct}%</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/[0.05] overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${(f.value / FUNNEL_DATA_DYN[0].value) * 100}%`,
-                          background: f.color,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Risk Radar */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>Risk Breakdown</CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Higher = healthier. Radar imbalance = where the product is breaking down.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="grid sm:grid-cols-2 gap-6 items-center">
-                <div className="h-[240px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={RISK_RADAR_DYN} outerRadius="75%">
-                      <PolarGrid stroke="rgba(255,255,255,0.06)" />
-                      <PolarAngleAxis dataKey="axis" stroke="rgba(255,255,255,0.55)" fontSize={11} />
-                      <Radar dataKey="value" stroke="#a78bfa" fill="#a78bfa" fillOpacity={0.3} strokeWidth={2} />
-                      <Tooltip content={<CustomTooltip />} />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="space-y-2.5">
-                  {RISK_RADAR_DYN.map((r) => {
-                    const tone = r.value >= 65 ? "good" : r.value >= 45 ? "warn" : "bad";
-                    const bar = tone === "good" ? "from-emerald-500 to-emerald-400" : tone === "warn" ? "from-amber-500 to-amber-400" : "from-rose-500 to-rose-400";
-                    return (
-                      <div key={r.axis}>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground">{r.axis}</span>
-                          <span className={cn("font-medium tabular-nums", tone === "good" ? "text-emerald-300" : tone === "warn" ? "text-amber-300" : "text-rose-300")}>
-                            {r.value}
-                          </span>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
-                          <div className={`h-full rounded-full bg-gradient-to-r ${bar}`} style={{ width: `${r.value}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-white">Weekly KPI Log</p>
+                  <p className="text-xs text-zinc-400 leading-relaxed mt-0.5">
+                    {kpiLogStale
+                      ? `${daysSinceKpiLog === null ? "Not started" : `${daysSinceKpiLog} days`} since your last snapshot. Log it to build trend data.`
+                      : `Logged ${daysSinceKpiLog} day${daysSinceKpiLog === 1 ? "" : "s"} ago. Next due in ${7 - (daysSinceKpiLog ?? 0)} day${7 - (daysSinceKpiLog ?? 0) === 1 ? "" : "s"}.`}
+                  </p>
                 </div>
               </div>
+              <Button size="sm" onClick={logKpiSnapshot} className="w-full">
+                <Plus className="h-3.5 w-3.5" /> Log this week's KPIs
+              </Button>
+              <p className="text-[11px] text-zinc-600 mt-2">
+                Captures MRR, churn, activation, retention, LTV, CAC from your current profile.
+              </p>
+              {kpiHistory.length > 0 && (
+                <p className="text-[11px] text-indigo-300 mt-1">
+                  <Flame className="inline h-3 w-3 mr-1" />
+                  {kpiHistory.length} snapshot{kpiHistory.length !== 1 ? "s" : ""} logged
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
 
-        {/* RIGHT: AI Insight Panel (1/3) */}
-        <div className="space-y-4">
-          <Card glow className="sticky top-20">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-indigo-500/50 blur-md rounded-lg" />
-                  <div className="relative h-9 w-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center">
-                    <Brain className="h-4 w-4 text-white" />
-                  </div>
+        {/* ── KPI Sparklines ───────────────────────────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <KpiSparkCard
+            label="MRR" current={profile.mrr} format="currency"
+            data={kpiSparkData} dataKey="mrr"
+            trend={mrrTrend} goodIfUp
+          />
+          <KpiSparkCard
+            label="Monthly Churn" current={profile.churnRate} format="percent"
+            data={kpiSparkData} dataKey="churn"
+            trend={churnTrend} goodIfUp={false}
+          />
+          <KpiSparkCard
+            label="Activation Rate" current={profile.activationRate} format="percent"
+            data={kpiSparkData} dataKey="activation"
+            trend={kpiSparkData.length >= 2 ? kpiSparkData[kpiSparkData.length - 1].activation - kpiSparkData[0].activation : 0}
+            goodIfUp
+          />
+        </div>
+
+        {/* ── SECTION TILES (8 sections) ──────────────────────── */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Section Audits</h2>
+              <p className="text-xs text-zinc-500 mt-0.5">Eight independent business dimensions. Each rolls up into the composite score above.</p>
+            </div>
+            <Badge variant="secondary" className="text-xs">{SECTIONS.length} sections</Badge>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {sectionScores.map((s) => {
+              const def = SECTIONS.find((sec) => sec.id === s.sectionId)!;
+              const Icon = ICON_BY_NAME[def.iconName] || Sparkles;
+              const previousSectionScore = auditHistory.length > 1
+                ? auditHistory[1].compositeScore // proxy; per-section history not stored individually
+                : null;
+              return (
+                <SectionTile
+                  key={s.sectionId}
+                  name={def.name}
+                  Icon={Icon}
+                  color={def.color}
+                  description={def.description}
+                  score={s.score}
+                  band={s.band}
+                  insight={s.insight}
+                  topRisk={s.topRisk}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Action Items + History ──────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+          {/* Action items panel */}
+          <Card className="lg:col-span-2">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <ListChecks className="h-4 w-4 text-indigo-300" />
+                  <h3 className="text-base font-semibold text-white">Action Items</h3>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {openItems.length} open · {doneItems.length} done
+                  </Badge>
                 </div>
-                <div>
-                  <CardTitle>Strategic Diagnosis</CardTitle>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">AI-generated · live twin</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3 pb-5">
-              <p className="text-xs text-muted-foreground leading-relaxed border-l-2 border-indigo-500/40 pl-3">
-                HealthTrack AI has excellent unit economics but is leaking value at the top of the funnel.
-                The priority is plugging activation and retention before scaling spend.
-              </p>
-
-              <div className="space-y-2.5 mt-1">
-                {DIAGNOSES_DYN.map((d) => {
-                  const Icon = d.icon;
-                  const t = TONE_MAP[d.tone as keyof typeof TONE_MAP];
-                  return (
-                    <div key={d.title} className={cn("rounded-xl border p-3.5", t.border, t.bg)}>
-                      <div className="flex items-start gap-2.5">
-                        <Icon className={cn("h-4 w-4 mt-0.5 shrink-0", t.icon)} />
-                        <div>
-                          <p className="text-xs font-semibold">{d.title}</p>
-                          <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{d.body}</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="pt-3 border-t border-white/[0.06] space-y-2">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Recommended actions</p>
-                <Link href="/simulator" className="block">
-                  <Button variant="secondary" size="sm" className="w-full justify-between">
-                    Run Scenario Simulation
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </Link>
-                <Link href="/audit" className="block">
-                  <Button variant="secondary" size="sm" className="w-full justify-between">
-                    Full Product Audit
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </Link>
-                <Link href="/roadmap" className="block">
-                  <Button size="sm" className="w-full justify-between">
-                    Prioritize Roadmap
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="pt-3 border-t border-white/[0.06]">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Key metrics snapshot</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { l: "MRR", v: "$48k" },
-                    { l: "Users", v: "12,500" },
-                    { l: "CAC", v: "$42" },
-                    { l: "LTV", v: "$420" },
-                  ].map((s) => (
-                    <div key={s.l} className="rounded-lg bg-white/[0.03] border border-white/[0.05] p-2.5">
-                      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.l}</p>
-                      <p className="text-sm font-semibold mt-0.5">{s.v}</p>
-                    </div>
+                <div className="flex gap-1">
+                  {(["open", "all", "done"] as const).map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setFilter(f)}
+                      className={`px-2.5 py-1 rounded-md text-[11px] font-medium border transition ${
+                        filter === f
+                          ? "bg-indigo-500/20 border-indigo-500/50 text-indigo-200"
+                          : "bg-transparent border-white/10 text-zinc-400 hover:text-white"
+                      }`}
+                    >
+                      {f === "open" ? "Open" : f === "done" ? "Done" : "All"}
+                    </button>
                   ))}
                 </div>
               </div>
+
+              {/* Quick-add */}
+              <div className="flex gap-2 mb-3">
+                <Input
+                  type="text"
+                  placeholder="Add an action item..."
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") handleAddTask(); }}
+                  className="h-8 text-sm"
+                />
+                <Button size="sm" variant="outline" onClick={handleAddTask}>
+                  <Plus className="h-3.5 w-3.5" /> Add
+                </Button>
+              </div>
+
+              {/* Task list */}
+              {visibleItems.length === 0 ? (
+                <div className="text-center py-8 surface-subtle">
+                  <p className="text-sm text-zinc-400">
+                    {filter === "open"
+                      ? "No open action items. Run an audit to generate fresh recommendations."
+                      : filter === "done"
+                        ? "No completed items yet. Tick one off to see it here."
+                        : "No action items yet. Run an audit to populate this list."}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  {visibleItems.slice(0, 10).map((item) => (
+                    <ActionItemRow
+                      key={item.id}
+                      item={item}
+                      onToggle={() => toggleActionItem(item.id)}
+                      onRemove={() => removeActionItem(item.id)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {doneItems.length > 0 && filter !== "done" && (
+                <button
+                  onClick={clearCompletedActionItems}
+                  className="text-[11px] text-zinc-500 hover:text-zinc-300 mt-3"
+                >
+                  Clear {doneItems.length} completed
+                </button>
+              )}
             </CardContent>
           </Card>
+
+          {/* Right column: stats + audit history */}
+          <div className="space-y-4">
+
+            {/* Stats panel */}
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <p className="eyebrow">This week</p>
+                <StatRow label="Open tasks" value={openItems.length} />
+                <StatRow label="Completed" value={doneItems.length} tone="good" />
+                <StatRow label="High priority" value={openItems.filter((i) => i.priority === "high").length} tone={openItems.filter(i => i.priority === "high").length > 0 ? "bad" : "neutral"} />
+                <StatRow label="Audits this month" value={auditHistory.filter((a) => Date.now() - a.createdAt < 30 * 24 * 3600 * 1000).length} />
+                <StatRow label="KPI snapshots" value={kpiHistory.length} />
+                <StatRow label="Risk Score" value={riskScore} tone={riskScore > 60 ? "bad" : riskScore > 40 ? "warn" : "good"} suffix="/100" />
+              </CardContent>
+            </Card>
+
+            {/* Audit history */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="eyebrow">Audit history</p>
+                  <Link href="/audit">
+                    <button className="text-[11px] text-indigo-300 hover:text-indigo-200">New audit →</button>
+                  </Link>
+                </div>
+                {auditHistory.length === 0 ? (
+                  <p className="text-xs text-zinc-500">No audits yet.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {auditHistory.slice(0, 5).map((a, i) => {
+                      const prev = auditHistory[i + 1];
+                      const delta = prev ? a.compositeScore - prev.compositeScore : 0;
+                      return (
+                        <div key={a.id} className="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-white/[0.025]">
+                          <div className="min-w-0">
+                            <p className="text-xs text-white tabular-numeric">{a.compositeScore} <span className="text-zinc-600">·</span> <span className="text-zinc-400">{a.result.band}</span></p>
+                            <p className="text-[10px] text-zinc-600">{new Date(a.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}</p>
+                          </div>
+                          {prev && (
+                            <span className={`text-[11px] font-semibold tabular-numeric ${
+                              delta > 0 ? "text-emerald-400" : delta < 0 ? "text-rose-400" : "text-zinc-500"
+                            }`}>
+                              {delta > 0 ? "+" : ""}{delta}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
+
       </div>
 
       <NextStep
-        label="Test a strategic decision"
-        description="Move to the Scenario Simulator to model the impact of fixing your biggest bottleneck before you commit engineering cycles."
+        label="Run a scenario simulation"
+        description="Test the impact of changes before you ship them. The simulator uses your current profile data."
         href="/simulator"
       />
     </AppShell>
+  );
+}
+
+// ─── Components ───────────────────────────────────────────────────────────
+
+function CompositeRing({ score }: { score: number }) {
+  const size = 120;
+  const r = size * 0.4;
+  const cx = size / 2;
+  const cy = size / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = (score / 100) * circ;
+  const color = score >= 75 ? "#10b981" : score >= 50 ? "#6366f1" : score >= 30 ? "#f59e0b" : "#f43f5e";
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)", position: "absolute" }}>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#ffffff0d" strokeWidth={size * 0.08} />
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={size * 0.08}
+          strokeDasharray={`${dash} ${circ - dash}`} strokeLinecap="round" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-3xl font-bold text-white tabular-numeric">{score}</span>
+      </div>
+    </div>
+  );
+}
+
+function DeltaPill({ value, suffix = "" }: { value: number; suffix?: string }) {
+  if (value === 0) return <Badge variant="secondary" className="text-[10px]">No change{suffix}</Badge>;
+  const positive = value > 0;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+      positive ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300"
+    }`}>
+      {positive ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
+      {positive ? "+" : ""}{value}{suffix}
+    </span>
+  );
+}
+
+function SectionTile({
+  name, Icon, color, description, score, band, insight, topRisk,
+}: {
+  name: string; Icon: React.ElementType; color: string; description: string;
+  score: number; band: "Strong" | "Moderate" | "Weak"; insight: string; topRisk?: string;
+}) {
+  const bandColor = band === "Strong" ? "text-emerald-300 bg-emerald-500/15 border-emerald-500/40"
+    : band === "Moderate" ? "text-amber-300 bg-amber-500/15 border-amber-500/40"
+    : "text-rose-300 bg-rose-500/15 border-rose-500/40";
+  const barColor = band === "Strong" ? "bg-emerald-500" : band === "Moderate" ? "bg-amber-500" : "bg-rose-500";
+
+  return (
+    <Card className="card-hover">
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3 gap-2">
+          <div className={`w-9 h-9 rounded-lg ${color} grid place-items-center shrink-0`}>
+            <Icon className="h-4 w-4 text-white" />
+          </div>
+          <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold border ${bandColor}`}>
+            {band}
+          </span>
+        </div>
+        <p className="text-sm font-semibold text-white mb-1 truncate">{name}</p>
+        <p className="text-3xl font-bold text-white tabular-numeric mb-2 leading-none">{score}<span className="text-xs text-zinc-500 font-normal"> / 100</span></p>
+        <div className="h-1 rounded-full bg-white/5 mb-3 overflow-hidden">
+          <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${score}%` }} />
+        </div>
+        <p className="text-[11px] text-zinc-400 leading-relaxed line-clamp-3">{insight}</p>
+        {topRisk && (
+          <div className="mt-2 px-2 py-1 rounded-md bg-rose-500/10 border border-rose-500/20">
+            <p className="text-[10px] text-rose-300 leading-tight">⚠ {topRisk}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function KpiSparkCard({
+  label, current, format, data, dataKey, trend, goodIfUp,
+}: {
+  label: string; current: number; format: "currency" | "percent";
+  data: any[]; dataKey: string; trend: number; goodIfUp: boolean;
+}) {
+  const positive = (trend > 0 && goodIfUp) || (trend < 0 && !goodIfUp);
+  const flat = Math.abs(trend) < 0.01;
+  const trendColor = flat ? "text-zinc-500" : positive ? "text-emerald-300" : "text-rose-300";
+  const Arrow = flat ? Minus : trend > 0 ? ArrowUp : ArrowDown;
+  const formattedCurrent = format === "currency"
+    ? current >= 1000 ? `$${(current / 1000).toFixed(1)}k` : `$${Math.round(current)}`
+    : `${current.toFixed(1)}%`;
+
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <p className="eyebrow">{label}</p>
+          {data.length >= 2 && (
+            <span className={`inline-flex items-center gap-1 text-xs font-semibold tabular-numeric ${trendColor}`}>
+              <Arrow className="h-3 w-3" />
+              {format === "currency" ? `$${Math.abs(Math.round(trend)).toLocaleString()}` : `${Math.abs(trend).toFixed(1)}pp`}
+            </span>
+          )}
+        </div>
+        <p className="text-2xl font-bold text-white tabular-numeric mb-2 leading-tight">{formattedCurrent}</p>
+        <div className="h-10">
+          {data.length < 2 ? (
+            <p className="text-[11px] text-zinc-600 italic mt-2">Log KPIs weekly to build a trend.</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={40}>
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={positive ? "#10b981" : "#f43f5e"} stopOpacity={0.3} />
+                    <stop offset="100%" stopColor={positive ? "#10b981" : "#f43f5e"} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey={dataKey} stroke={positive ? "#10b981" : "#f43f5e"} strokeWidth={1.5} fill={`url(#grad-${dataKey})`} />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ActionItemRow({
+  item, onToggle, onRemove,
+}: {
+  item: { id: string; title: string; priority: "high" | "med" | "low"; status: string; impact?: string; sectionId?: string; source: string };
+  onToggle: () => void;
+  onRemove: () => void;
+}) {
+  const done = item.status === "done";
+  const priorityColor = item.priority === "high" ? "text-rose-300" : item.priority === "med" ? "text-amber-300" : "text-zinc-400";
+
+  return (
+    <div className={`group flex items-center gap-3 px-3 py-2 rounded-md transition ${done ? "opacity-50" : "hover:bg-white/[0.025]"}`}>
+      <button
+        onClick={onToggle}
+        className={`shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition ${
+          done
+            ? "bg-emerald-500/20 border-emerald-500/60"
+            : "border-white/15 hover:border-indigo-500/50"
+        }`}
+        aria-label={done ? "Mark as open" : "Mark as done"}
+      >
+        {done && <Check className="h-3 w-3 text-emerald-300" />}
+      </button>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm leading-snug ${done ? "line-through text-zinc-500" : "text-white"}`}>{item.title}</p>
+        {item.impact && (
+          <p className="text-[11px] text-zinc-500 mt-0.5">{item.impact}</p>
+        )}
+      </div>
+      <span className={`text-[10px] font-bold uppercase tracking-wider shrink-0 ${priorityColor}`}>
+        {item.priority}
+      </span>
+      <button
+        onClick={onRemove}
+        className="opacity-0 group-hover:opacity-100 transition shrink-0 text-zinc-500 hover:text-rose-400"
+        aria-label="Remove"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function StatRow({ label, value, suffix, tone = "neutral" }: { label: string; value: number; suffix?: string; tone?: "good" | "bad" | "warn" | "neutral" }) {
+  const color = tone === "good" ? "text-emerald-300" : tone === "bad" ? "text-rose-300" : tone === "warn" ? "text-amber-300" : "text-white";
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-xs text-zinc-400">{label}</span>
+      <span className={`text-sm font-bold tabular-numeric ${color}`}>{value}{suffix || ""}</span>
+    </div>
   );
 }
