@@ -48,6 +48,13 @@ export type AuditSnapshot = {
   createdAt: number;
 };
 
+export type AssistantMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: number;
+};
+
 // ─── Store ────────────────────────────────────────────────────────────────
 
 type ProfileStore = {
@@ -64,6 +71,10 @@ type ProfileStore = {
   // simulator state
   lastScenario: ScenarioResults | null;
   savedScenarios: SavedScenario[];
+
+  // assistant + onboarding
+  assistantMessages: AssistantMessage[];
+  hasSeenWelcome: boolean;
 
   // profile mutations
   updateProfile: (patch: Partial<ProductProfile>) => void;
@@ -92,6 +103,12 @@ type ProfileStore = {
   setLastScenario: (r: ScenarioResults | null) => void;
   saveScenario: (name: string, inputs: ScenarioInputs, results: ScenarioResults) => void;
   deleteScenario: (id: string) => void;
+
+  // assistant + onboarding
+  appendAssistantMessage: (m: Omit<AssistantMessage, "id" | "timestamp">) => void;
+  clearAssistantMessages: () => void;
+  markWelcomeSeen: () => void;
+  resetWelcome: () => void;
 };
 
 export const useProfileStore = create<ProfileStore>()(
@@ -104,6 +121,8 @@ export const useProfileStore = create<ProfileStore>()(
       actionItems: [],
       lastScenario: null,
       savedScenarios: [],
+      assistantMessages: [],
+      hasSeenWelcome: false,
 
       updateProfile: (patch) =>
         set((s) => ({ profile: { ...s.profile, ...patch } })),
@@ -227,13 +246,25 @@ export const useProfileStore = create<ProfileStore>()(
 
       deleteScenario: (id) =>
         set((s) => ({ savedScenarios: s.savedScenarios.filter((x) => x.id !== id) })),
+
+      // ── Assistant ──────────────────────────────────────────────
+      appendAssistantMessage: (m) => set((s) => ({
+        assistantMessages: [
+          ...s.assistantMessages,
+          { ...m, id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, timestamp: Date.now() },
+        ].slice(-60), // cap at last 60 messages
+      })),
+      clearAssistantMessages: () => set({ assistantMessages: [] }),
+
+      // ── Onboarding ─────────────────────────────────────────────
+      markWelcomeSeen: () => set({ hasSeenWelcome: true }),
+      resetWelcome: () => set({ hasSeenWelcome: false }),
     }),
     {
       name: "producttwin-profile",
       storage: createJSONStorage(() => localStorage),
-      version: 3,
+      version: 4,
       migrate: (persisted: any, version) => {
-        // Defensive: ensure new collections exist on old persisted state
         if (!persisted) return persisted;
         return {
           ...persisted,
@@ -241,6 +272,8 @@ export const useProfileStore = create<ProfileStore>()(
           kpiHistory: persisted.kpiHistory ?? [],
           actionItems: persisted.actionItems ?? [],
           savedScenarios: persisted.savedScenarios ?? [],
+          assistantMessages: persisted.assistantMessages ?? [],
+          hasSeenWelcome: persisted.hasSeenWelcome ?? false,
         };
       },
     },

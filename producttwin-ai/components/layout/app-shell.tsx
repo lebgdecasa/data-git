@@ -3,16 +3,15 @@
 import { useState, type ReactNode } from "react";
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
+import { Assistant } from "@/components/assistant/assistant";
+import { WelcomeModal } from "@/components/onboarding/welcome-modal";
 
 /**
- * Application shell — sidebar + topbar + content area.
- * Title and description are owned by the PageHeader component on each page,
- * so the topbar stays minimal and consistent across the journey.
+ * Application shell — sidebar + topbar + content + always-on guidance.
+ * Title and description are owned by the PageHeader on each page.
  */
 export function AppShell({
   children,
-  // Legacy props (silently ignored) for backwards compatibility with pages
-  // not yet migrated to PageHeader.
   title: _title,
   subtitle: _subtitle,
 }: {
@@ -40,6 +39,10 @@ export function AppShell({
           </div>
         </footer>
       </div>
+
+      {/* Always-on guidance layer */}
+      <WelcomeModal />
+      <Assistant />
     </div>
   );
 }
