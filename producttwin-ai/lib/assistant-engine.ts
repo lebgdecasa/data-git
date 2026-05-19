@@ -46,7 +46,7 @@ export function getContextualGreeting(ctx: AssistantContext): string {
     return "Risk & Compliance scores 8 dimensions of enterprise readiness. Toggle frameworks (GDPR / HIPAA / SOC 2 etc.) to see how requirements stack against your readiness.";
   }
   if (pathname === "/") {
-    return "Welcome to ProductTwin. I'm your in-app assistant — I can guide you through the workflow, explain features, and analyse your product. Ready to start?";
+    return "Welcome to NIKA. I'm your in-app assistant — I can guide you through the workflow, explain features, and analyse your product. Ready to start?";
   }
   return "I'm your in-app assistant. Ask me about features, KPIs, or what to do next.";
 }
@@ -59,7 +59,7 @@ export function getQuickPrompts(ctx: AssistantContext): string[] {
   const universal = ["What should I do next?", "Explain the workflow"];
 
   if (!pop) {
-    return ["How do I start?", "Load demo data", "What does ProductTwin do?", "Explain the journey"];
+    return ["How do I start?", "Load demo data", "What does NIKA do?", "Explain the journey"];
   }
 
   if (pathname.startsWith("/audit")) {
@@ -102,7 +102,7 @@ export function generateAssistantResponse(query: string, ctx: AssistantContext):
 
   // ── What does this product do? ──────────────────────
   if (matches(q, ["what is producttwin", "what does this do", "what is this", "explain producttwin", "what's this for"])) {
-    return "ProductTwin is a strategic operating dashboard for early-stage product teams. You define your product once, then use the workspace weekly: review section scores, complete action items, log KPI snapshots, run simulations of decisions before you ship them, and generate executive-style reports. The goal is to make better product decisions with evidence instead of intuition.";
+    return "NIKA is a strategic operating dashboard for early-stage product teams. You define your product once, then use the workspace weekly: review section scores, complete action items, log KPI snapshots, run simulations of decisions before you ship them, and generate executive-style reports. The goal is to make better product decisions with evidence instead of intuition.";
   }
 
   // ── How do I start? ─────────────────────────────────

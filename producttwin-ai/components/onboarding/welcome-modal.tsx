@@ -74,7 +74,7 @@ export function WelcomeModal() {
                 Welcome
               </Badge>
               <h2 id="welcome-title" className="text-2xl font-bold text-white tracking-tight mb-1">
-                Welcome to ProductTwin
+                Welcome to NIKA
               </h2>
               <p className="text-sm text-zinc-300 leading-relaxed max-w-md">
                 A strategic operating dashboard for product teams. Define your product, audit it,

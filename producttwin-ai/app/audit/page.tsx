@@ -126,7 +126,7 @@ export default function AuditPage() {
         step={1}
         eyebrow="Business Profile"
         title="Define your product"
-        description="Tell us about your product. ProductTwin uses this data across the audit, simulator, and final recommendations — everything downstream is calibrated to what you enter here."
+        description="Tell us about your product. NIKA uses this data across the audit, simulator, and final recommendations — everything downstream is calibrated to what you enter here."
         actions={
           <Button size="sm" variant="outline" onClick={loadDemo}>
             <Database className="h-3.5 w-3.5" />
@@ -327,7 +327,7 @@ export default function AuditPage() {
             <div>
               <p className="text-sm font-semibold text-white">Ready to generate your audit?</p>
               <p className="text-xs text-zinc-400">
-                ProductTwin will analyse 5 dimensions, surface risks, and recommend the next action.
+                NIKA will analyse 5 dimensions, surface risks, and recommend the next action.
               </p>
             </div>
             <Button onClick={handleGenerate} disabled={!isReady || loading} size="lg">

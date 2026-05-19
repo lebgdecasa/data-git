@@ -19,7 +19,7 @@ import {
 
 // ─── The shareable post text (exact spec from user) ───────────────────────────
 
-const LINKEDIN_POST = `I built ProductTwin, an AI-powered product decision simulator for PMs and business analysts.
+const LINKEDIN_POST = `I built NIKA, an AI-powered product decision simulator for PMs and business analysts.
 
 The idea is simple: before shipping a product decision, simulate its impact.
 
@@ -172,7 +172,7 @@ export function LinkedInDemoModal({
                 <Badge variant="secondary" className="text-[10px]">Shareable</Badge>
               </div>
               <h2 id="linkedin-modal-title" className="text-xl font-bold text-white">
-                ProductTwin - Project Showcase
+                NIKA - Project Showcase
               </h2>
               <p className="text-sm text-zinc-400 mt-0.5">
                 One-page summary for LinkedIn posts, portfolio reviews, and demo videos

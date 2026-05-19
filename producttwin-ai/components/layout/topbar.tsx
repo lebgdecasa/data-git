@@ -37,7 +37,7 @@ export function Topbar({
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center shrink-0">
               <Sparkle className="h-3.5 w-3.5 text-white" />
             </div>
-            <span className="text-sm font-semibold text-white truncate">ProductTwin</span>
+            <span className="text-sm font-semibold text-white truncate">NIKA</span>
           </Link>
 
           {/* Current product chip — desktop only */}

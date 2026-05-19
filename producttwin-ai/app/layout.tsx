@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ProductTwin · Simulate product decisions before you ship",
+  title: "NIKA · Simulate product decisions before you ship",
   description:
     "Strategy studio for PMs, founders, and innovation teams. Stress-test pricing, churn, retention, and roadmap decisions in a digital twin of your product.",
 };

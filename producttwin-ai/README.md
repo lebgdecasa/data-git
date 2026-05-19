@@ -1,4 +1,4 @@
-# ProductTwin
+# NIKA
 
 > **An AI-powered product decision simulator for PMs, business analysts, and founders.**
 > Simulate the impact of a product decision - pricing, onboarding, roadmap, compliance - *before* you ship it.
@@ -20,7 +20,7 @@ There is **no safe sandbox** to simulate the consequences of these decisions bef
 
 ## 2. The Solution
 
-**ProductTwin** is a strategy studio that lets product teams diagnose, simulate, and prioritize before they ship. It runs on a deterministic simulation engine (no API calls, no hallucinations) that translates fuzzy PM intuition into ranked alternatives with explicit assumptions.
+**NIKA** is a strategy studio that lets product teams diagnose, simulate, and prioritize before they ship. It runs on a deterministic simulation engine (no API calls, no hallucinations) that translates fuzzy PM intuition into ranked alternatives with explicit assumptions.
 
 It answers four questions every product team faces:
 
@@ -64,7 +64,7 @@ It answers four questions every product team faces:
 
 ## 5. Product Management Value
 
-For PMs, ProductTwin demonstrates the difference between **opinion-led** and **evidence-led** decision making:
+For PMs, NIKA demonstrates the difference between **opinion-led** and **evidence-led** decision making:
 
 - **Translate intuition into trade-offs.** "Onboarding feels too long" becomes "reducing steps from 6 → 3 lifts activation by 14pp and reduces early churn by 25%."
 - **Rank alternatives systematically.** RICE scoring with a live recommendation engine surfaces the highest-leverage feature - not the loudest one.
@@ -130,7 +130,7 @@ npm start
 Use this template when sharing the project:
 
 ```
-I built ProductTwin, an AI-powered product decision simulator for PMs and business analysts.
+I built NIKA, an AI-powered product decision simulator for PMs and business analysts.
 
 The idea is simple: before shipping a product decision, simulate its impact.
 

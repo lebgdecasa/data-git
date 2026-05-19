@@ -120,7 +120,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-semibold">ProductTwin</div>
+              <div className="text-sm font-semibold">NIKA</div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 Decision Simulator
               </div>
@@ -156,7 +156,7 @@ export default function Landing() {
         </h1>
 
         <p className="mt-8 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
-          ProductTwin helps teams forecast the impact of pricing, onboarding,
+          NIKA helps teams forecast the impact of pricing, onboarding,
           roadmap, retention, and compliance decisions using structured business
           logic and AI-style recommendations.
         </p>
@@ -205,7 +205,7 @@ export default function Landing() {
                   <div className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
                   <div className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
                   <span className="ml-2 text-xs text-muted-foreground">
-                    ProductTwin · Executive Overview
+                    NIKA · Executive Overview
                   </span>
                 </div>
                 <Badge variant="success">
@@ -328,7 +328,7 @@ export default function Landing() {
               A digital twin of your product, running in your browser.
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              ProductTwin builds a live model of your business from a handful of
+              NIKA builds a live model of your business from a handful of
               assumptions, then shows you exactly what changes when you pull any lever.
             </p>
           </div>
@@ -455,7 +455,7 @@ export default function Landing() {
             <div className="h-5 w-5 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 grid place-items-center">
               <Sparkle className="h-2.5 w-2.5 text-white" />
             </div>
-            <span>ProductTwin · portfolio demo · no real data is stored</span>
+            <span>NIKA · portfolio demo · no real data is stored</span>
           </div>
           <div className="flex items-center gap-2">
             <Github className="h-3 w-3" />

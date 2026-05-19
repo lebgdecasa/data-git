@@ -348,7 +348,7 @@ export function buildStrategicReport(
     industry: profile.industry || "Software · SaaS",
     stage: profile.productType || "Early Growth",
     date: SHORT_DATE,
-    preparedBy: "ProductTwin",
+    preparedBy: "NIKA",
     executiveSummary,
     health: {
       score: healthScore,
@@ -582,12 +582,12 @@ function estimateRice(p: ProductProfile, title?: string): number {
 
 export function buildLinkedInSummary(profile: ProductProfile, audit: AuditResult | null): string {
   if (!profile.productName) {
-    return "Run an analysis in ProductTwin to generate your LinkedIn share text.";
+    return "Run an analysis in NIKA to generate your LinkedIn share text.";
   }
   const ltvCac = profile.cac > 0 ? profile.ltv / profile.cac : 0;
   const report = buildStrategicReport(profile, audit);
 
-  return `🎯 Strategic product diagnosis I ran on ${profile.productName} using ProductTwin:
+  return `🎯 Strategic product diagnosis I ran on ${profile.productName} using NIKA:
 
 📊 The numbers:
 • MRR: ${fmtCurrency(profile.mrr)}

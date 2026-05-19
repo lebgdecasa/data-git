@@ -114,7 +114,7 @@ export function Assistant() {
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white">ProductTwin Assistant</p>
+                <p className="text-sm font-semibold text-white">NIKA Assistant</p>
                 <p className="text-[11px] text-zinc-400">
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 mr-1" />
                   Always available · {populated ? `working on ${profile.productName}` : "no product loaded"}
