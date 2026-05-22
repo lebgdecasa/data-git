@@ -165,6 +165,47 @@ export interface CategoryResult {
   dimensionIds: DimensionId[];
 }
 
+// ---------------------------------------------------------------------------
+// Strategic narrative report (AI or deterministic fallback)
+// ---------------------------------------------------------------------------
+
+export interface RecommendedAction {
+  title: string;
+  detail: string;
+  priority: Priority;
+}
+
+export interface RoadmapPhase {
+  timeframe: string; // e.g. "Days 1–7"
+  focus: string;
+  actions: string[];
+}
+
+/**
+ * The full strategic audit report. Produced by the AI generator, or by the
+ * deterministic fallback when no AI key is configured.
+ */
+export interface AuditNarrative {
+  executiveSummary: string;
+  productDiagnosis: string;
+  scoreOverview: string;
+  growthBottlenecks: string[];
+  positioningAnalysis: string;
+  landingPageAnalysis: string;
+  onboardingAnalysis: string;
+  pricingAnalysis: string;
+  trustAnalysis: string;
+  pmfAnalysis: string;
+  topActions: RecommendedAction[];
+  roadmap30Day: RoadmapPhase[];
+  quickWins: string[];
+  strategicRisks: string[];
+  finalRecommendation: string;
+  generatedAt: string;
+  engine: "ai" | "deterministic";
+  model?: string;
+}
+
 /** The complete, deterministic audit result. Stored as the audit `report`. */
 export interface AuditResult {
   /** Final score out of 100. */

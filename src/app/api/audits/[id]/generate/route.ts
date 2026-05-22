@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { runAudit } from "@/lib/audit/scoringEngine";
+import {
+  buildReportInput,
+  generateAuditReport,
+} from "@/lib/ai/generateAuditReport";
 import { mapAuditRow, type AuditRow } from "@/lib/types";
 
 /**
@@ -36,13 +40,18 @@ export async function POST(
     .eq("id", params.id);
 
   try {
+    // 1. Deterministic scoring (always runs).
     const report = runAudit(audit.answers, {
       productName: audit.profile.productName,
     });
 
+    // 2. Strategic narrative (AI when configured, deterministic fallback).
+    const input = buildReportInput(report, audit.profile, audit.answers);
+    const narrative = await generateAuditReport(input);
+
     const { data, error } = await supabase
       .from("audits")
-      .update({ status: "completed", report })
+      .update({ status: "completed", report, narrative })
       .eq("id", params.id)
       .select("*")
       .single();

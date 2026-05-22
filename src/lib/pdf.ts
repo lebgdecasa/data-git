@@ -131,6 +131,70 @@ export function exportAuditToPdf(audit: Audit) {
     });
   }
 
+  // --- Strategic narrative report (AI / deterministic) ---
+  const narrative = audit.narrative;
+  if (narrative) {
+    doc.addPage();
+    y = margin;
+    heading("Strategic report", 16);
+
+    heading("Executive summary", 12);
+    paragraph(narrative.executiveSummary);
+    y += 4;
+
+    heading("Product diagnosis", 12);
+    paragraph(narrative.productDiagnosis);
+    y += 4;
+
+    heading("Main growth bottlenecks", 12);
+    narrative.growthBottlenecks.forEach((b) => paragraph(`•  ${b}`));
+    y += 4;
+
+    const sections: [string, string][] = [
+      ["Positioning analysis", narrative.positioningAnalysis],
+      ["Landing page analysis", narrative.landingPageAnalysis],
+      ["Onboarding analysis", narrative.onboardingAnalysis],
+      ["Pricing analysis", narrative.pricingAnalysis],
+      ["Trust & credibility analysis", narrative.trustAnalysis],
+      ["PMF signal analysis", narrative.pmfAnalysis],
+    ];
+    sections.forEach(([title, body]) => {
+      heading(title, 12);
+      paragraph(body);
+      y += 2;
+    });
+
+    heading("Top 10 recommended actions", 12);
+    narrative.topActions.forEach((a, i) => {
+      paragraph(`${i + 1}. [${a.priority.toUpperCase()}] ${a.title}`);
+      if (a.detail) paragraph(`    ${a.detail}`);
+    });
+    y += 4;
+
+    heading("30-day improvement roadmap", 12);
+    narrative.roadmap30Day.forEach((p) => {
+      ensureSpace(20);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(31, 41, 55);
+      doc.text(`${p.timeframe} — ${p.focus}`, margin, y);
+      y += 14;
+      p.actions.forEach((a) => paragraph(`•  ${a}`));
+      y += 2;
+    });
+
+    heading("Quick wins", 12);
+    narrative.quickWins.forEach((w) => paragraph(`•  ${w}`));
+    y += 4;
+
+    heading("Strategic risks", 12);
+    narrative.strategicRisks.forEach((r) => paragraph(`•  ${r}`));
+    y += 4;
+
+    heading("Final recommendation", 12);
+    paragraph(narrative.finalRecommendation);
+  }
+
   // --- Footer ---
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {

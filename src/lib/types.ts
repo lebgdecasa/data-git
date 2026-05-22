@@ -3,7 +3,7 @@
  * These mirror the database schema in `supabase/migrations`.
  */
 
-import type { AuditResult } from "@/lib/audit/auditTypes";
+import type { AuditNarrative, AuditResult } from "@/lib/audit/auditTypes";
 
 export type AuditStatus = "draft" | "in_progress" | "generating" | "completed";
 
@@ -58,42 +58,6 @@ export interface AuditAttachment {
 /** Map of question id -> answer value (string, or string[] for checkboxes). */
 export type AuditAnswers = Record<string, string | string[]>;
 
-export interface DomainScore {
-  domain: AuditDomainId;
-  score: number; // 0-100
-  summary: string;
-}
-
-export interface AuditIssue {
-  id: string;
-  domain: AuditDomainId;
-  title: string;
-  description: string;
-  severity: "high" | "medium" | "low";
-}
-
-export interface AuditRecommendation {
-  id: string;
-  domain: AuditDomainId;
-  title: string;
-  description: string;
-  impact: "high" | "medium" | "low";
-  effort: "high" | "medium" | "low";
-}
-
-/** The structured report produced by the AI generator. */
-export interface AuditReport {
-  overallScore: number; // 0-100
-  headline: string;
-  summary: string;
-  domainScores: DomainScore[];
-  strengths: string[];
-  issues: AuditIssue[];
-  recommendations: AuditRecommendation[];
-  generatedAt: string;
-  provider: string;
-}
-
 export interface Audit {
   id: string;
   userId: string;
@@ -102,7 +66,10 @@ export interface Audit {
   profile: BusinessProfile;
   answers: AuditAnswers;
   attachments: AuditAttachment[];
+  /** Deterministic scoring result (scores, status, maturity). */
   report: AuditResult | null;
+  /** AI (or fallback) strategic narrative report. */
+  narrative: AuditNarrative | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -117,6 +84,7 @@ export interface AuditRow {
   answers: AuditAnswers;
   attachments: AuditAttachment[];
   report: AuditResult | null;
+  narrative: AuditNarrative | null;
   created_at: string;
   updated_at: string;
 }
@@ -131,6 +99,7 @@ export function mapAuditRow(row: AuditRow): Audit {
     answers: row.answers ?? {},
     attachments: row.attachments ?? [],
     report: row.report,
+    narrative: row.narrative ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
