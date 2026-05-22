@@ -1,156 +1,397 @@
 import { jsPDF } from "jspdf";
 import type { Audit } from "@/lib/types";
-import type { DimensionResult } from "@/lib/audit/auditTypes";
+import type { DimensionResult, RagStatus } from "@/lib/audit/auditTypes";
 
 /**
- * Client-side PDF export of a completed audit. Renders a clean, multi-section
- * document with the maturity stage, category and dimension scores, priorities
- * and recommendations.
+ * Professional, client-side PDF export for an audit. Produces a multi-page,
+ * client-ready document: branded cover, scores, tables, the strategic
+ * narrative and a consistent footer. Pure jsPDF (no plugins) so it stays
+ * compatible and dependency-light.
  */
+
+type RGB = [number, number, number];
+
+const INDIGO: RGB = [99, 102, 241];
+const INDIGO_DARK: RGB = [79, 70, 229];
+const INK: RGB = [17, 24, 39];
+const BODY: RGB = [55, 65, 81];
+const MUTED: RGB = [107, 114, 128];
+const LINE: RGB = [229, 231, 235];
+const ZEBRA: RGB = [248, 249, 251];
+const GREEN: RGB = [22, 163, 74];
+const AMBER: RGB = [202, 138, 4];
+const RED: RGB = [220, 38, 38];
+
+const STATUS_LABEL: Record<RagStatus, string> = {
+  green: "On track",
+  yellow: "Needs work",
+  red: "At risk",
+};
+
+function statusColor(label: string): RGB {
+  if (label === "On track") return GREEN;
+  if (label === "Needs work") return AMBER;
+  if (label === "At risk") return RED;
+  return BODY;
+}
+
+function priorityColor(label: string): RGB {
+  const p = label.toLowerCase();
+  if (p.startsWith("critical")) return RED;
+  if (p.startsWith("high")) return AMBER;
+  return MUTED;
+}
+
+function formatDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+interface Column {
+  header: string;
+  width: number;
+  align?: "left" | "right";
+  color?: (value: string) => RGB;
+}
+
 export function exportAuditToPdf(audit: Audit) {
   const report = audit.report;
   if (!report) throw new Error("Audit has no report to export.");
+  const narrative = audit.narrative;
 
   const doc = new jsPDF({ unit: "pt", format: "a4" });
-  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
   const margin = 48;
-  const contentWidth = pageWidth - margin * 2;
+  const contentW = pageW - margin * 2;
+  const footerReserve = 54;
   let y = margin;
 
+  const generatedAt = narrative?.generatedAt ?? report.generatedAt;
+
+  // ----- low-level helpers -------------------------------------------------
+  const setColor = (c: RGB) => doc.setTextColor(c[0], c[1], c[2]);
+  const setFill = (c: RGB) => doc.setFillColor(c[0], c[1], c[2]);
+  const setDraw = (c: RGB) => doc.setDrawColor(c[0], c[1], c[2]);
+
   const ensureSpace = (needed: number) => {
-    if (y + needed > doc.internal.pageSize.getHeight() - margin) {
+    if (y + needed > pageH - footerReserve) {
       doc.addPage();
       y = margin;
     }
   };
 
-  const heading = (text: string, size = 14) => {
-    ensureSpace(size + 12);
+  const sectionHeading = (text: string) => {
+    ensureSpace(34);
+    y += 6;
+    setFill(INDIGO);
+    doc.rect(margin, y - 10, 4, 16, "F");
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(size);
-    doc.setTextColor(17, 24, 39);
-    doc.text(text, margin, y);
-    y += size + 8;
+    doc.setFontSize(15);
+    setColor(INK);
+    doc.text(text, margin + 12, y + 3);
+    y += 20;
   };
 
-  const paragraph = (text: string, size = 10) => {
+  const subHeading = (text: string) => {
+    ensureSpace(20);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    setColor(INDIGO_DARK);
+    doc.text(text, margin, y);
+    y += 15;
+  };
+
+  const paragraph = (text: string, size = 10, color: RGB = BODY) => {
+    if (!text) return;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(size);
-    doc.setTextColor(55, 65, 81);
-    const lines = doc.splitTextToSize(text, contentWidth) as string[];
+    setColor(color);
+    const lineH = size + 4;
+    const lines = doc.splitTextToSize(text, contentW) as string[];
     lines.forEach((line) => {
-      ensureSpace(size + 4);
+      ensureSpace(lineH);
       doc.text(line, margin, y);
-      y += size + 4;
+      y += lineH;
     });
   };
 
-  const scoreBar = (label: string, score: number) => {
-    ensureSpace(28);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(31, 41, 55);
-    doc.text(label, margin, y);
-    doc.text(`${score}/100`, margin + contentWidth - 50, y);
-    y += 6;
-    doc.setFillColor(229, 231, 235);
-    doc.roundedRect(margin, y, contentWidth, 6, 3, 3, "F");
-    const [r, g, b] =
-      score >= 70 ? [22, 163, 74] : score >= 45 ? [202, 138, 4] : [220, 38, 38];
-    doc.setFillColor(r, g, b);
-    doc.roundedRect(margin, y, (contentWidth * score) / 100, 6, 3, 3, "F");
-    y += 18;
+  const bullets = (items: string[], size = 10) => {
+    doc.setFontSize(size);
+    const lineH = size + 4;
+    items.forEach((item) => {
+      const lines = doc.splitTextToSize(item, contentW - 14) as string[];
+      ensureSpace(lineH * lines.length);
+      setFill(INDIGO);
+      doc.circle(margin + 3, y - 3, 1.6, "F");
+      doc.setFont("helvetica", "normal");
+      setColor(BODY);
+      lines.forEach((line, i) => {
+        doc.text(line, margin + 14, y);
+        if (i < lines.length - 1) y += lineH;
+      });
+      y += lineH;
+    });
   };
 
-  // --- Cover header ---
-  doc.setFillColor(99, 102, 241);
-  doc.rect(0, 0, pageWidth, 96, "F");
+  // ----- table renderer (page-break aware, multiline cells) ----------------
+  const table = (columns: Column[], rows: string[][]) => {
+    const padX = 6;
+    const padY = 5;
+    const lh = 12;
+    const tableRight = margin + columns.reduce((s, c) => s + c.width, 0);
+    const xs: number[] = [];
+    let cx = margin;
+    for (const c of columns) {
+      xs.push(cx);
+      cx += c.width;
+    }
+
+    const drawHeader = () => {
+      const h = lh + padY * 2;
+      ensureSpace(h);
+      setFill(INDIGO);
+      doc.rect(margin, y, tableRight - margin, h, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255);
+      columns.forEach((c, i) => {
+        const right = c.align === "right";
+        const tx = right ? xs[i] + c.width - padX : xs[i] + padX;
+        doc.text(c.header, tx, y + padY + lh - 3, {
+          align: right ? "right" : "left",
+        });
+      });
+      y += h;
+    };
+
+    drawHeader();
+
+    rows.forEach((row, ri) => {
+      doc.setFontSize(9);
+      const cellLines = row.map((cell, ci) =>
+        doc.splitTextToSize(cell ?? "", columns[ci].width - padX * 2) as string[],
+      );
+      const maxLines = Math.max(1, ...cellLines.map((l) => l.length));
+      const h = maxLines * lh + padY * 2;
+
+      if (y + h > pageH - footerReserve) {
+        doc.addPage();
+        y = margin;
+        drawHeader();
+      }
+
+      if (ri % 2 === 1) {
+        setFill(ZEBRA);
+        doc.rect(margin, y, tableRight - margin, h, "F");
+      }
+
+      doc.setFont("helvetica", "normal");
+      columns.forEach((c, ci) => {
+        setColor(c.color ? c.color(row[ci] ?? "") : BODY);
+        const right = c.align === "right";
+        const tx = right ? xs[ci] + c.width - padX : xs[ci] + padX;
+        cellLines[ci].forEach((ln, li) => {
+          doc.text(ln, tx, y + padY + lh - 3 + li * lh, {
+            align: right ? "right" : "left",
+          });
+        });
+      });
+
+      setDraw(LINE);
+      doc.line(margin, y + h, tableRight, y + h);
+      y += h;
+    });
+
+    y += 10;
+  };
+
+  // ===================== COVER PAGE =======================================
+  // Brand band
+  setFill(INDIGO);
+  doc.rect(0, 0, pageW, 76, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
   doc.setTextColor(255, 255, 255);
+  doc.text("PRODUCT AUDIT STUDIO", margin, 46);
+
+  // Title block
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(30);
+  setColor(INK);
+  doc.text("Product Audit Report", margin, 230);
+
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.text("Product Audit Studio", margin, 50);
+  setColor(INDIGO_DARK);
+  doc.text(audit.profile.productName || "Untitled product", margin, 264);
+
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.text(audit.profile.productName, margin, 70);
-  y = 130;
+  setColor(MUTED);
+  const meta = [audit.profile.industry, audit.profile.stage]
+    .filter(Boolean)
+    .join("  ·  ");
+  let metaY = 288;
+  if (meta) {
+    doc.text(meta, margin, metaY);
+    metaY += 16;
+  }
+  if (audit.profile.website) {
+    doc.text(audit.profile.website, margin, metaY);
+    metaY += 16;
+  }
+  doc.text(`Generated ${formatDate(generatedAt)}`, margin, metaY);
 
-  // --- Score + maturity ---
+  // Score card
+  const cardY = 360;
+  const cardH = 132;
+  setFill([249, 250, 251]);
+  setDraw(LINE);
+  doc.roundedRect(margin, cardY, contentW, cardH, 12, 12, "FD");
+
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(40);
-  doc.setTextColor(99, 102, 241);
-  doc.text(`${report.overallScore}`, margin, y);
-  doc.setFontSize(12);
-  doc.setTextColor(107, 114, 128);
-  doc.text(`/ 100  ·  ${report.maturityStage}`, margin + 64, y);
-  y += 28;
+  doc.setFontSize(9);
+  setColor(MUTED);
+  doc.text("OVERALL SCORE", margin + 28, cardY + 34);
 
-  heading(report.headline, 13);
+  doc.setFontSize(60);
+  setColor(INDIGO);
+  doc.text(`${report.overallScore}`, margin + 24, cardY + 96);
+  doc.setFontSize(16);
+  setColor(MUTED);
+  const numW = doc.getTextWidth(`${report.overallScore}`);
+  doc.text("/ 100", margin + 24 + numW + 10, cardY + 96);
+
+  // Maturity badge on the right of the card
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  setColor(MUTED);
+  doc.text("MATURITY STAGE", margin + contentW - 200, cardY + 34);
+  doc.setFontSize(20);
+  setColor(INK);
+  doc.text(report.maturityStage, margin + contentW - 200, cardY + 64);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  setColor(MUTED);
+  doc.text(
+    `${report.completeness}% of questions answered`,
+    margin + contentW - 200,
+    cardY + 84,
+  );
+
+  // Cover footer note
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  setColor(MUTED);
+  doc.text(
+    "Confidential — prepared by Product Audit Studio",
+    margin,
+    pageH - 64,
+  );
+
+  // ===================== SCORE OVERVIEW ===================================
+  doc.addPage();
+  y = margin;
+
+  sectionHeading("Score overview");
   paragraph(report.summary);
-  paragraph(report.maturitySummary);
-  y += 8;
+  y += 4;
 
-  // --- Category scores ---
-  heading("Category scores");
-  report.categories.forEach((c) => scoreBar(c.title, c.score));
-  y += 8;
+  subHeading("Category scores");
+  table(
+    [
+      { header: "Category", width: contentW - 160 },
+      { header: "Score", width: 70, align: "right" },
+      { header: "Status", width: 90, color: statusColor },
+    ],
+    report.categories.map((c) => [
+      c.title,
+      `${c.score}/100`,
+      STATUS_LABEL[c.status],
+    ]),
+  );
 
-  // --- Dimension scores ---
-  heading("Dimension scores");
-  report.dimensions.forEach((d) => scoreBar(d.title, d.score));
-  y += 8;
+  subHeading("Dimension scores");
+  table(
+    [
+      { header: "Dimension", width: contentW - 230 },
+      { header: "Score", width: 60, align: "right" },
+      { header: "Status", width: 80, color: statusColor },
+      { header: "Priority", width: 90, color: priorityColor },
+    ],
+    report.dimensions.map((d) => [
+      d.title,
+      `${d.score}/100`,
+      STATUS_LABEL[d.status],
+      capitalize(d.priority),
+    ]),
+  );
 
-  // --- Top priorities ---
-  if (report.topPriorities.length) {
-    heading("Top priorities");
-    report.topPriorities.forEach((d: DimensionResult) => {
-      ensureSpace(48);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(185, 28, 28);
-      doc.text(`[${d.priority.toUpperCase()}] ${d.title}`, margin, y);
-      y += 14;
-      paragraph(d.explanation);
-      d.recommendations.forEach((r) => paragraph(`•  ${r}`));
-      d.nextActions.forEach((a) => paragraph(`→  ${a}`));
-      y += 6;
-    });
-  }
-
-  // --- Strengths ---
-  if (report.strengths.length) {
-    heading("Strengths");
-    report.strengths.forEach((d) => {
-      ensureSpace(24);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(22, 101, 52);
-      doc.text(`${d.title} — ${d.score}/100`, margin, y);
-      y += 14;
-      paragraph(d.explanation);
-      y += 4;
-    });
-  }
-
-  // --- Strategic narrative report (AI / deterministic) ---
-  const narrative = audit.narrative;
+  // ===================== NARRATIVE SECTIONS ===============================
   if (narrative) {
-    doc.addPage();
-    y = margin;
-    heading("Strategic report", 16);
-
-    heading("Executive summary", 12);
+    sectionHeading("Executive summary");
     paragraph(narrative.executiveSummary);
-    y += 4;
 
-    heading("Product diagnosis", 12);
+    sectionHeading("Main diagnosis");
     paragraph(narrative.productDiagnosis);
-    y += 4;
+    y += 2;
+    paragraph(narrative.scoreOverview);
 
-    heading("Main growth bottlenecks", 12);
-    narrative.growthBottlenecks.forEach((b) => paragraph(`•  ${b}`));
-    y += 4;
+    sectionHeading("Key problems");
+    if (report.topPriorities.length) {
+      table(
+        [
+          { header: "Issue", width: contentW - 160 },
+          { header: "Score", width: 60, align: "right" },
+          { header: "Priority", width: 90, color: priorityColor },
+        ],
+        report.topPriorities.map((d: DimensionResult) => [
+          d.title,
+          `${d.score}/100`,
+          capitalize(d.priority),
+        ]),
+      );
+    }
+    bullets(narrative.growthBottlenecks);
 
-    const sections: [string, string][] = [
+    sectionHeading("Recommendations");
+    table(
+      [
+        { header: "#", width: 28, align: "right" },
+        { header: "Action", width: contentW - 118, align: "left" },
+        { header: "Priority", width: 90, color: priorityColor },
+      ],
+      narrative.topActions.map((a, i) => [
+        `${i + 1}`,
+        a.title,
+        capitalize(a.priority),
+      ]),
+    );
+    if (narrative.quickWins.length) {
+      subHeading("Quick wins");
+      bullets(narrative.quickWins);
+    }
+
+    sectionHeading("30-day improvement roadmap");
+    table(
+      [
+        { header: "Timeframe", width: 90 },
+        { header: "Focus", width: 150 },
+        { header: "Key actions", width: contentW - 240 },
+      ],
+      narrative.roadmap30Day.map((p) => [
+        p.timeframe,
+        p.focus,
+        p.actions.map((a) => `• ${a}`).join("\n"),
+      ]),
+    );
+
+    sectionHeading("Detailed report");
+    const analyses: [string, string][] = [
       ["Positioning analysis", narrative.positioningAnalysis],
       ["Landing page analysis", narrative.landingPageAnalysis],
       ["Onboarding analysis", narrative.onboardingAnalysis],
@@ -158,59 +399,72 @@ export function exportAuditToPdf(audit: Audit) {
       ["Trust & credibility analysis", narrative.trustAnalysis],
       ["PMF signal analysis", narrative.pmfAnalysis],
     ];
-    sections.forEach(([title, body]) => {
-      heading(title, 12);
+    analyses.forEach(([title, body]) => {
+      subHeading(title);
       paragraph(body);
       y += 2;
     });
 
-    heading("Top 10 recommended actions", 12);
-    narrative.topActions.forEach((a, i) => {
-      paragraph(`${i + 1}. [${a.priority.toUpperCase()}] ${a.title}`);
-      if (a.detail) paragraph(`    ${a.detail}`);
-    });
-    y += 4;
+    if (narrative.strategicRisks.length) {
+      subHeading("Strategic risks");
+      bullets(narrative.strategicRisks);
+    }
 
-    heading("30-day improvement roadmap", 12);
-    narrative.roadmap30Day.forEach((p) => {
-      ensureSpace(20);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(31, 41, 55);
-      doc.text(`${p.timeframe} — ${p.focus}`, margin, y);
-      y += 14;
-      p.actions.forEach((a) => paragraph(`•  ${a}`));
-      y += 2;
-    });
-
-    heading("Quick wins", 12);
-    narrative.quickWins.forEach((w) => paragraph(`•  ${w}`));
-    y += 4;
-
-    heading("Strategic risks", 12);
-    narrative.strategicRisks.forEach((r) => paragraph(`•  ${r}`));
-    y += 4;
-
-    heading("Final recommendation", 12);
-    paragraph(narrative.finalRecommendation);
-  }
-
-  // --- Footer ---
-  const pageCount = doc.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(156, 163, 175);
-    doc.text(
-      `Generated by Product Audit Studio · ${new Date(report.generatedAt).toLocaleDateString()} · Page ${i}/${pageCount}`,
-      margin,
-      doc.internal.pageSize.getHeight() - 24,
+    sectionHeading("Final recommendation");
+    // Highlighted callout box.
+    {
+      const padded = 14;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      const lines = doc.splitTextToSize(
+        narrative.finalRecommendation,
+        contentW - padded * 2,
+      ) as string[];
+      const boxH = lines.length * 16 + padded * 2;
+      ensureSpace(boxH);
+      setFill([238, 242, 255]);
+      doc.roundedRect(margin, y, contentW, boxH, 10, 10, "F");
+      setColor(INDIGO_DARK);
+      let ty = y + padded + 11;
+      lines.forEach((line) => {
+        doc.text(line, margin + padded, ty);
+        ty += 16;
+      });
+      y += boxH + 8;
+    }
+  } else {
+    sectionHeading("Strategic report");
+    paragraph(
+      "Generate the strategic report from the results page to include the executive summary, diagnosis, recommendations and roadmap in this export.",
     );
   }
 
-  const filename = `${audit.profile.productName || "product"}-audit.pdf`
+  // ===================== FOOTERS (all content pages) =======================
+  const pageCount = doc.getNumberOfPages();
+  for (let i = 2; i <= pageCount; i++) {
+    doc.setPage(i);
+    setDraw(LINE);
+    doc.line(margin, pageH - 38, pageW - margin, pageH - 38);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    setColor(INDIGO);
+    doc.text("Product Audit Studio", margin, pageH - 24);
+    doc.setFont("helvetica", "normal");
+    setColor(MUTED);
+    doc.text(audit.profile.productName || "", pageW / 2, pageH - 24, {
+      align: "center",
+    });
+    doc.text(`Page ${i - 1} of ${pageCount - 1}`, pageW - margin, pageH - 24, {
+      align: "right",
+    });
+  }
+
+  const filename = `${audit.profile.productName || "product"}-audit-report.pdf`
     .toLowerCase()
     .replace(/[^a-z0-9.-]+/g, "-");
   doc.save(filename);
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
