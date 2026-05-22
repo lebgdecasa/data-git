@@ -57,8 +57,11 @@ const PRIORITY_RANK: Record<Priority, number> = {
 // ---------------------------------------------------------------------------
 
 /** Coerce a raw answer into a 1-5 integer, or null when unanswered/invalid. */
-function coerceAnswer(raw: string | number | null | undefined): number | null {
-  if (raw === null || raw === undefined || raw === "") return null;
+function coerceAnswer(
+  raw: string | number | string[] | null | undefined,
+): number | null {
+  if (raw === null || raw === undefined || raw === "" || Array.isArray(raw))
+    return null;
   const n = typeof raw === "number" ? raw : Number(raw);
   if (!Number.isFinite(n)) return null;
   const rounded = Math.round(n);
@@ -91,11 +94,14 @@ export function scoreDimension(
   dimension: Dimension,
   answers: RawAnswers,
 ): DimensionScore {
+  // Only `scale` questions contribute to the deterministic score.
+  const scored = dimension.questions.filter((q) => q.type === "scale");
+
   let weightedSum = 0;
   let weightTotal = 0;
   let answeredCount = 0;
 
-  for (const question of dimension.questions) {
+  for (const question of scored) {
     const value = coerceAnswer(answers[question.id]);
     if (value === null) continue;
     weightedSum += value * question.weight;
@@ -115,7 +121,7 @@ export function scoreDimension(
     status: statusFromScore(score),
     weight: dimension.weight,
     answeredCount,
-    questionCount: dimension.questions.length,
+    questionCount: scored.length,
   };
 }
 

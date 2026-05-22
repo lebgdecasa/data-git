@@ -12,8 +12,10 @@ import { AUDIT_DOMAINS, AUDIT_QUESTIONS, getDomain } from "@/lib/audit-config";
  * the output feels responsive to user input rather than random.
  */
 
-function scaleAnswerToScore(value: string | undefined): number | null {
-  if (!value) return null;
+function scaleAnswerToScore(
+  value: string | string[] | undefined,
+): number | null {
+  if (!value || Array.isArray(value)) return null;
   const n = Number(value);
   if (Number.isFinite(n) && n >= 1 && n <= 5) {
     return Math.round((n / 5) * 100);
@@ -24,7 +26,10 @@ function scaleAnswerToScore(value: string | undefined): number | null {
 function answeredRatio(domain: AuditDomainId, answers: Audit["answers"]): number {
   const qs = AUDIT_QUESTIONS.filter((q) => q.domain === domain);
   if (qs.length === 0) return 0;
-  const answered = qs.filter((q) => (answers[q.id] ?? "").trim().length > 0);
+  const answered = qs.filter((q) => {
+    const v = answers[q.id];
+    return Array.isArray(v) ? v.length > 0 : (v ?? "").trim().length > 0;
+  });
   return answered.length / qs.length;
 }
 

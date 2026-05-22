@@ -55,8 +55,8 @@ export interface AuditAttachment {
   value: string; // URL or storage path
 }
 
-/** Map of question id -> answer value. */
-export type AuditAnswers = Record<string, string>;
+/** Map of question id -> answer value (string, or string[] for checkboxes). */
+export type AuditAnswers = Record<string, string | string[]>;
 
 export interface DomainScore {
   domain: AuditDomainId;

@@ -57,16 +57,42 @@ export interface ScalePoint {
 }
 
 /**
- * A diagnostic question. Each is phrased as a positive statement that the
- * user rates on the shared 5-point scale, which keeps scoring deterministic
- * and comparable across the whole audit.
+ * Supported question input types in the questionnaire UI.
+ *
+ * Only `scale` questions feed the deterministic score. Every other type is
+ * qualitative context that enriches the audit (and the future AI layer).
+ */
+export type QuestionType =
+  | "scale"
+  | "text"
+  | "textarea"
+  | "radio"
+  | "checkbox"
+  | "url"
+  | "file";
+
+/** An option for `radio` and `checkbox` questions. */
+export interface QuestionOption {
+  value: string;
+  label: string;
+}
+
+/**
+ * A diagnostic question. `scale` questions are phrased as positive statements
+ * rated on the shared 5-point scale, which keeps scoring deterministic and
+ * comparable. Other types capture qualitative context.
  */
 export interface DiagnosticQuestion {
   id: string;
   dimension: DimensionId;
   text: string;
+  type: QuestionType;
   helpText?: string;
-  /** Relative weight of this question within its dimension (default 1). */
+  placeholder?: string;
+  required?: boolean;
+  /** Options for `radio` / `checkbox` questions. */
+  options?: QuestionOption[];
+  /** Relative weight within its dimension. Only used for `scale` questions. */
   weight: number;
 }
 
@@ -75,6 +101,8 @@ export interface Dimension {
   id: DimensionId;
   title: string;
   description: string;
+  /** Friendly, consultant-voice intro shown at the top of the section. */
+  intro: string;
   category: CategoryId;
   /** Relative weight of this dimension in the overall (0-100) score. */
   weight: number;
@@ -96,7 +124,10 @@ export interface CategoryMeta {
  * string equivalent), or null/undefined when unanswered. The scoring engine
  * coerces these safely.
  */
-export type RawAnswers = Record<string, string | number | null | undefined>;
+export type RawAnswers = Record<
+  string,
+  string | number | string[] | null | undefined
+>;
 
 // ---------------------------------------------------------------------------
 // Scoring output
