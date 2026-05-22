@@ -418,6 +418,26 @@ export function maturitySummary(stage: MaturityStage): string {
   return MATURITY_SUMMARY[stage];
 }
 
+/** What's at stake for each dimension — the "why it matters" if left unfixed. */
+const DIMENSION_RISK: Record<DimensionId, string> = {
+  positioning_clarity: "wasted traffic and confused visitors who bounce before they understand you",
+  target_customer: "scattered messaging and slow, inefficient sales",
+  problem_urgency: "long sales cycles and weak conversion",
+  value_proposition: "low conversion and difficulty justifying your price",
+  landing_conversion: "leaking the traffic you work hard to earn",
+  onboarding_friction: "poor activation and early churn",
+  feature_clarity: "user confusion and undervalued, underused features",
+  pricing_logic: "leaving revenue on the table or deterring buyers",
+  trust_credibility: "hesitant visitors who don't convert",
+  retention_potential: "a leaky bucket that caps growth no matter how much you spend",
+  gtm_readiness: "unpredictable, hard-to-scale acquisition",
+  pmf_signals: "scaling spend on a product the market isn't yet pulling",
+};
+
+export function dimensionRisk(id: DimensionId): string {
+  return DIMENSION_RISK[id] ?? "slower growth than your potential";
+}
+
 /** Build the headline + summary narrative for the overall result. */
 export function buildNarrative(params: {
   productName: string;

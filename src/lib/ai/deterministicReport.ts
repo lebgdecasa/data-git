@@ -5,7 +5,7 @@ import type {
   RecommendedAction,
   RoadmapPhase,
 } from "@/lib/audit/auditTypes";
-import { maturitySummary } from "@/lib/audit/recommendationEngine";
+import { dimensionRisk, maturitySummary } from "@/lib/audit/recommendationEngine";
 import type { AuditReportInput } from "@/lib/ai/aiAuditPrompt";
 
 /**
@@ -134,7 +134,7 @@ export function buildDeterministicNarrative(
     .slice(0, 5)
     .map(
       (d) =>
-        `If ${d.title} stays at ${d.score}/100, expect ${riskConsequence(d.id)}.`,
+        `If ${d.title} stays at ${d.score}/100, expect ${dimensionRisk(d.id)}.`,
     );
 
   const finalRecommendation = `Focus relentlessly on ${weakest[0]?.title ?? "your weakest area"} over the next 30 days — it's the single biggest lever on your score right now. ${
@@ -170,23 +170,4 @@ function priorityRank(d: DimensionResult): number {
 
 function dedupe(arr: string[]): string[] {
   return Array.from(new Set(arr));
-}
-
-const RISK_CONSEQUENCE: Record<DimensionId, string> = {
-  positioning_clarity: "wasted traffic and confused visitors who bounce",
-  target_customer: "scattered messaging and slow, inefficient sales",
-  problem_urgency: "long sales cycles and weak conversion",
-  value_proposition: "low conversion and difficulty justifying your price",
-  landing_conversion: "leaking the traffic you work hard to earn",
-  onboarding_friction: "poor activation and early churn",
-  feature_clarity: "user confusion and underused, undervalued features",
-  pricing_logic: "leaving revenue on the table or deterring buyers",
-  trust_credibility: "hesitant visitors who don't convert",
-  retention_potential: "a leaky bucket that caps growth no matter the spend",
-  gtm_readiness: "unpredictable, hard-to-scale acquisition",
-  pmf_signals: "scaling spend on a product the market isn't yet pulling",
-};
-
-function riskConsequence(id: DimensionId): string {
-  return RISK_CONSEQUENCE[id] ?? "slower growth than your potential";
 }
