@@ -3,6 +3,8 @@
  * These mirror the database schema in `supabase/migrations`.
  */
 
+import type { AuditResult } from "@/lib/audit/auditTypes";
+
 export type AuditStatus = "draft" | "in_progress" | "generating" | "completed";
 
 /** The six audit pillars that a product is scored against. */
@@ -100,7 +102,7 @@ export interface Audit {
   profile: BusinessProfile;
   answers: AuditAnswers;
   attachments: AuditAttachment[];
-  report: AuditReport | null;
+  report: AuditResult | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -114,7 +116,7 @@ export interface AuditRow {
   profile: BusinessProfile;
   answers: AuditAnswers;
   attachments: AuditAttachment[];
-  report: AuditReport | null;
+  report: AuditResult | null;
   created_at: string;
   updated_at: string;
 }

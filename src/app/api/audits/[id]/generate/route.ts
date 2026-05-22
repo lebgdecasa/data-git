@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateReport } from "@/lib/ai/generate-report";
+import { runAudit } from "@/lib/audit/scoringEngine";
 import { mapAuditRow, type AuditRow } from "@/lib/types";
 
 /**
@@ -36,7 +36,9 @@ export async function POST(
     .eq("id", params.id);
 
   try {
-    const report = await generateReport(audit);
+    const report = runAudit(audit.answers, {
+      productName: audit.profile.productName,
+    });
 
     const { data, error } = await supabase
       .from("audits")

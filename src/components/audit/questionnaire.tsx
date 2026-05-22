@@ -19,9 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import {
   Select,
@@ -31,16 +29,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { AUDIT_DOMAINS, questionsForDomain } from "@/lib/audit-config";
+import {
+  DIMENSIONS,
+  LIKERT_SCALE,
+  questionsForDimension,
+  TOTAL_QUESTION_COUNT,
+} from "@/lib/audit/auditQuestions";
+import type { DiagnosticQuestion } from "@/lib/audit/auditTypes";
 import { AttachmentsEditor } from "@/components/audit/attachments-editor";
-import type {
-  Audit,
-  AuditAnswers,
-  AuditAttachment,
-  AuditQuestion,
-} from "@/lib/types";
+import type { Audit, AuditAnswers, AuditAttachment } from "@/lib/types";
 
-const TOTAL_STEPS = AUDIT_DOMAINS.length + 1; // domains + attachments step
+const TOTAL_STEPS = DIMENSIONS.length + 1; // dimensions + attachments step
 
 export function Questionnaire({
   audit,
@@ -58,8 +57,8 @@ export function Questionnaire({
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
 
-  const isAttachmentsStep = step === AUDIT_DOMAINS.length;
-  const domain = AUDIT_DOMAINS[step];
+  const isAttachmentsStep = step === DIMENSIONS.length;
+  const dimension = DIMENSIONS[step];
   const progress = Math.round(((step + 1) / TOTAL_STEPS) * 100);
 
   const answeredCount = useMemo(
@@ -69,6 +68,12 @@ export function Questionnaire({
 
   function setAnswer(id: string, value: string) {
     setAnswers((prev) => ({ ...prev, [id]: value }));
+  }
+
+  function dimensionComplete(dimensionId: (typeof DIMENSIONS)[number]["id"]) {
+    return questionsForDimension(dimensionId).every((q) =>
+      (answers[q.id] ?? "").trim(),
+    );
   }
 
   async function persist(extra?: Partial<Audit>) {
@@ -125,14 +130,12 @@ export function Questionnaire({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
+    <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
       {/* Step rail */}
       <aside className="hidden lg:block">
         <ol className="space-y-1">
-          {AUDIT_DOMAINS.map((d, i) => {
-            const done = questionsForDomain(d.id)
-              .filter((q) => q.required)
-              .every((q) => (answers[q.id] ?? "").trim());
+          {DIMENSIONS.map((d, i) => {
+            const done = dimensionComplete(d.id);
             return (
               <li key={d.id}>
                 <button
@@ -146,7 +149,7 @@ export function Questionnaire({
                 >
                   <span
                     className={cn(
-                      "flex h-5 w-5 items-center justify-center rounded-full border text-xs",
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs",
                       done && "border-success bg-success text-white",
                     )}
                   >
@@ -159,7 +162,7 @@ export function Questionnaire({
           })}
           <li>
             <button
-              onClick={() => setStep(AUDIT_DOMAINS.length)}
+              onClick={() => setStep(DIMENSIONS.length)}
               className={cn(
                 "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors",
                 isAttachmentsStep
@@ -167,8 +170,8 @@ export function Questionnaire({
                   : "text-muted-foreground hover:bg-accent/50",
               )}
             >
-              <span className="flex h-5 w-5 items-center justify-center rounded-full border text-xs">
-                {AUDIT_DOMAINS.length + 1}
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs">
+                {DIMENSIONS.length + 1}
               </span>
               Links & screenshots
             </button>
@@ -182,7 +185,9 @@ export function Questionnaire({
             <span>
               Step {step + 1} of {TOTAL_STEPS}
             </span>
-            <span>{answeredCount} answers</span>
+            <span>
+              {answeredCount}/{TOTAL_QUESTION_COUNT} answered
+            </span>
           </div>
           <Progress value={progress} />
         </div>
@@ -209,11 +214,14 @@ export function Questionnaire({
           ) : (
             <>
               <CardHeader>
-                <CardTitle>{domain.title}</CardTitle>
-                <CardDescription>{domain.description}</CardDescription>
+                <CardTitle>{dimension.title}</CardTitle>
+                <CardDescription>{dimension.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {questionsForDomain(domain.id).map((q) => (
+                <p className="text-sm text-muted-foreground">
+                  Rate how much you agree with each statement.
+                </p>
+                {questionsForDimension(dimension.id).map((q) => (
                   <QuestionField
                     key={q.id}
                     question={q}
@@ -271,53 +279,28 @@ function QuestionField({
   value,
   onChange,
 }: {
-  question: AuditQuestion;
+  question: DiagnosticQuestion;
   value: string;
   onChange: (value: string) => void;
 }) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={question.id}>
-        {question.label}
-        {question.required && <span className="ml-1 text-destructive">*</span>}
-      </Label>
+      <Label htmlFor={question.id}>{question.text}</Label>
       {question.helpText && (
         <p className="text-xs text-muted-foreground">{question.helpText}</p>
       )}
-
-      {question.type === "textarea" && (
-        <Textarea
-          id={question.id}
-          placeholder={question.placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-
-      {(question.type === "text" || question.type === "url") && (
-        <Input
-          id={question.id}
-          type={question.type === "url" ? "url" : "text"}
-          placeholder={question.placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-
-      {(question.type === "select" || question.type === "scale") && (
-        <Select value={value} onValueChange={onChange}>
-          <SelectTrigger id={question.id}>
-            <SelectValue placeholder="Select an answer" />
-          </SelectTrigger>
-          <SelectContent>
-            {question.options?.map((o) => (
-              <SelectItem key={o.value} value={o.value}>
-                {o.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={question.id}>
+          <SelectValue placeholder="Select a rating" />
+        </SelectTrigger>
+        <SelectContent>
+          {LIKERT_SCALE.map((point) => (
+            <SelectItem key={point.value} value={String(point.value)}>
+              {point.value} — {point.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
