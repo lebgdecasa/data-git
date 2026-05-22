@@ -1,104 +1,119 @@
-Let's recap the `git` commands you need to remember in order to work on the challenges during the bootcamp.
+# Product Audit Studio
 
-## Status
+Audit your digital product across six pillars — **Product, Landing Page,
+Onboarding, Pricing, Positioning and Conversion Funnel** — and get a structured
+report with an overall score, per-pillar scores, strengths, issues and
+prioritised recommendations. Export it as a polished PDF.
 
-First, let's make sure that our working directory is **clean**:
+Built as a real SaaS foundation, not a toy demo.
 
-```bash
-git status
-```
+## Tech stack
 
-If you get the following result, then you're all set and can start working on this challenge:
+- **Next.js 14** (App Router) + **TypeScript**
+- **Tailwind CSS** + **shadcn/ui** (Radix primitives)
+- **Supabase** — auth, Postgres (with Row Level Security) and Storage
+- **AI** — pluggable provider (OpenAI / Anthropic Claude) with a built-in
+  deterministic mock generator so the app runs with zero API keys
+- **jsPDF** — client-side PDF export
 
-```text
-On branch master
-Your branch is up to date with 'origin/master'.
-
-nothing to commit, working tree clean
-```
-
-If you do not get this message, you need to first commit / clean some other challenges before you can start. Do not hesitate to raise a ticket to get some help from a TA over the first few days. `git` can be hard, so please do ask!
-
-## First commit
-
-Let's create a Python file:
+## Quick start
 
 ```bash
-touch today.py
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment
+cp .env.example .env.local   # then fill in your Supabase keys
+
+# 3. Apply the database schema
+#    Paste supabase/migrations/0001_init.sql into the Supabase SQL editor,
+#    or run `supabase db push` with the Supabase CLI.
+
+# 4. Run the dev server
+npm run dev                  # http://localhost:3000
 ```
 
-Open this file in your text editor. You will need to declare and implement a function called `my_name_is`, which doesn't take any parameter and returns a constant of type `str`. The value of this constant will be your GitHub nickname.
+The app works **out of the box without any AI keys** — `AI_PROVIDER=mock`
+produces a real, answer-driven report. Set `AI_PROVIDER=openai` or
+`anthropic` and add the matching key to use a live LLM.
 
-Run `make` until one test passes (no need for the second one to be successful, we'll take care of it in a second).
+## Core pages
 
-```text
-tests/test_git.py::TestGit::test_hi_my_name_is PASSED
-tests/test_git.py::TestGit::test_my_buddy_is   FAILED
+| Route | Page |
+| --- | --- |
+| `/` | Landing page (hero, features, how-it-works, pricing, CTA) |
+| `/login`, `/signup` | Supabase email/password auth |
+| `/dashboard` | Stats overview + recent audits |
+| `/audits/new` | Capture business/product profile |
+| `/audits/[id]/questionnaire` | Multi-step questionnaire + link/screenshot uploads |
+| `/audits/[id]/results` | Scored report with issues & recommendations |
+| `/audits/[id]/report` | Print/share-friendly report + PDF export |
+| `/history` | All audits with delete |
+| `/settings` | Profile, account and AI engine settings |
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── (auth)/                 # login & signup (route group + layout)
+│   ├── (app)/                  # authenticated shell (sidebar + topbar)
+│   │   ├── dashboard/
+│   │   ├── audits/new/
+│   │   ├── audits/[id]/{questionnaire,results,report}/
+│   │   ├── history/
+│   │   └── settings/
+│   ├── api/audits/             # REST: list/create, get/update/delete, generate
+│   ├── auth/callback/          # OAuth / email confirmation handler
+│   ├── actions/                # server actions (auth, profile)
+│   ├── layout.tsx, page.tsx, globals.css
+├── components/
+│   ├── ui/                     # shadcn/ui primitives
+│   ├── marketing/              # landing header & footer
+│   ├── app/                    # sidebar, user menu, page header
+│   ├── audit/                  # questionnaire, report view, cards, export...
+│   ├── settings/               # profile form
+│   ├── auth/                   # auth form
+│   ├── logo.tsx, score-gauge.tsx
+├── lib/
+│   ├── supabase/               # browser/server/middleware clients
+│   ├── ai/                     # prompt builder, mock + LLM generators
+│   ├── audit-config.ts         # the six pillars + questionnaire definition
+│   ├── audits.ts               # server-side data access
+│   ├── types.ts, utils.ts, pdf.ts
+middleware.ts                   # session refresh + route protection
+supabase/migrations/0001_init.sql
 ```
 
-Good, you made some progress. It's time to pause and save your progression. Just like a checkpoint!
+## Architecture notes
+
+- **Auth & security.** Sessions are refreshed in `middleware.ts`; protected
+  routes redirect to `/login`. Every table is guarded by **Row Level
+  Security** so users only ever see their own data. The Storage bucket is
+  private and scoped to a per-user folder.
+- **Flexible questionnaire.** `profile`, `answers`, `attachments` and `report`
+  are stored as JSONB, so the questionnaire (defined in
+  `lib/audit-config.ts`) can evolve without migrations.
+- **Pluggable AI.** `lib/ai/generate-report.ts` resolves the provider from env
+  and falls back to the deterministic mock generator on any failure, so the
+  product is always functional. The OpenAI and Anthropic integrations are
+  wired and ready — just add a key.
+- **Scoring.** The mock generator derives pillar scores from actual answers
+  (scale questions + completeness), then surfaces the weakest pillars as
+  issues and the highest-leverage fixes as recommendations.
+
+## Scripts
 
 ```bash
-git add today.py
-git commit -m "Implement my_name_is function"
-git push origin master
+npm run dev        # start dev server
+npm run build      # production build
+npm run start      # serve production build
+npm run lint       # eslint
+npm run typecheck  # tsc --noEmit
 ```
 
-Kitt should pick up the change and show 50% progress. Good job!
+## Environment variables
 
-## Second commit
-
-Let's start solving the second test. To do so, you need to declare and implement a function called `my_buddy_is`, which doesn't take any parameter and returns a constant `str`. The value of the constant will be your buddy's GitHub nickname (or yours if you don't have a buddy today :().
-
-You can use this useful command to check what has changed in the file:
-
-```bash
-git diff
-```
-
-If you are satisfied, you can now commit & push to GitHub:
-
-```bash
-git add today.py
-git commit -m "Implement my_buddy_is function"
-git push origin master
-```
-
-## Making `pylint` happy
-
-At this point of the challenge, you should have 3 style errors:
-
-```text
-C0114: Missing module docstring (missing-module-docstring)
-C0116: Missing function or method docstring (missing-function-docstring)
-C0116: Missing function or method docstring (missing-function-docstring)
-```
-
-You are missing [docstrings](https://www.python.org/dev/peps/pep-0257/). One for the module, and one for each function. A docstring gives context / documentation to a module or function.
-
-To fix the first error, add a docstring on the **first line** of `today.py`:
-
-```python
-"""A module computing buddy pair names for the day"""
-```
-
-Run `make` again, you should have one less style error.
-
-Repeat this by adding a [one-line docstring](https://www.python.org/dev/peps/pep-0257/#one-line-docstrings) for the two functions.
-
-
-When you are done, time to perform the third commit of the challenge:
-
-```bash
-git diff
-```
-
-```bash
-git add today.py
-git commit -m "Fix style issues, should get a 'Good Style' now :pray:"
-git push origin master
-```
-
-## Conclusion
-
-You now know how to navigate Kitt, position yourself on a challenge, open it in a text editor and work on it, switching to the terminal to run `make` and some git commands. Congratulations!
+See [`.env.example`](./.env.example) for the full list. Required for real use:
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`SUPABASE_SERVICE_ROLE_KEY`. AI is optional.

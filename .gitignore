@@ -1,31 +1,58 @@
-.env
+# ---------------------------------------------------------------------------
+# Node / Next.js
+# ---------------------------------------------------------------------------
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
-# OS generated files #
-######################
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# ---------------------------------------------------------------------------
+# OS generated files
+# ---------------------------------------------------------------------------
 .DS_Store
 __MACOSX
-# Jupiter Notebook #
+
+# ---------------------------------------------------------------------------
+# Python (legacy bootcamp files)
+# ---------------------------------------------------------------------------
 .pytest_cache
 __pycache__
 *checkpoint.ipynb
 *.ipynb_checkpoints
 
-# inteliJ #
+# IDE
 .idea
+.vscode
 *.gz
 *PKG-INFO
 *.egg-info
-*.csv
-05-ML/**/*.txt
-06-Deep-Learning/**/*.txt
 *.zip
 mlruns
 *.sqlite
-# IDE #
-*.vscode
-
-# Specific Challenges
-06-Deep-Learning/03-Convolutional-Neural-Networks/04-Transfer-Learning/flowers/
-
-# Challengify - test challengification files
-*_challengify*
