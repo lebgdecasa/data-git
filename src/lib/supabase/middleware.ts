@@ -1,5 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  SUPABASE_ANON_KEY,
+  SUPABASE_URL,
+  isSupabaseConfigured,
+} from "@/lib/supabase/config";
 
 const PROTECTED_PREFIXES = [
   "/dashboard",
@@ -15,11 +20,18 @@ const AUTH_ROUTES = ["/login", "/signup"];
  * protection. Returns the (possibly redirected) response.
  */
 export async function updateSession(request: NextRequest) {
+  // Without real credentials, any Supabase call fails ("Failed to fetch").
+  // Skip auth handling so the app still renders and can show a setup notice
+  // instead of crashing the request.
+  if (!isSupabaseConfigured()) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {

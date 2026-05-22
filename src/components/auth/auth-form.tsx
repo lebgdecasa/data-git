@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import {
+  isSupabaseConfigured,
+  SUPABASE_SETUP_MESSAGE,
+} from "@/lib/supabase/config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +26,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!isSupabaseConfigured()) {
+      toast.error("Supabase isn't configured", {
+        description: SUPABASE_SETUP_MESSAGE,
+      });
+      return;
+    }
+
     setLoading(true);
     const supabase = createClient();
 
@@ -51,9 +63,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         router.refresh();
       }
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Please try again.";
+      // A raw "Failed to fetch" means the Supabase host was unreachable —
+      // almost always a missing/incorrect URL or a paused project.
+      const isNetwork = /failed to fetch|network|load failed/i.test(message);
       toast.error("Something went wrong", {
-        description:
-          err instanceof Error ? err.message : "Please try again.",
+        description: isNetwork
+          ? "Couldn't reach Supabase. Check your NEXT_PUBLIC_SUPABASE_URL in .env.local (and that the project is running), then restart the dev server."
+          : message,
       });
     } finally {
       setLoading(false);
