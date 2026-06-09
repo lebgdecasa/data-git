@@ -19,7 +19,6 @@ export default function Episodes() {
 
         <ul className="mt-12 grid gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {episodes.map((ep, i) => {
-            const label = `episode ${ep.id} of The Wellness Billion`
             const live = isRealUrl(ep.url)
             return (
               <Reveal as="li" key={ep.id} delay={(i % 3) * 90}>
@@ -29,33 +28,36 @@ export default function Episodes() {
                     target={live ? '_blank' : undefined}
                     rel={live ? 'noopener noreferrer' : undefined}
                     className="block rounded-card transition-transform duration-300 group-hover:-translate-y-1.5"
-                    aria-label={`Watch ${label}`}
+                    aria-label={`Watch ${ep.title}`}
                     tabIndex={live ? undefined : -1}
                   >
                     <MediaPlaceholder
                       src={youTubeThumb(ep.url)}
                       fallbackSrc={youTubeThumbHq(ep.url)}
-                      alt={`The Wellness Billion, ${label}`}
+                      alt={ep.title}
                       ratio="video"
                       play
                       className="ring-1 ring-line transition-shadow duration-300 group-hover:shadow-lift"
                     />
                   </a>
-                  <div className="mt-4">
-                    {live ? (
-                      <a
-                        href={ep.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-terracotta transition-colors hover:text-terracotta-hover"
-                      >
-                        Watch
-                        <IconArrow className="h-4 w-4" />
-                        <span className="sr-only">{label}</span>
-                      </a>
-                    ) : (
-                      <span className="text-sm font-semibold text-body/45">Watch · coming soon</span>
-                    )}
+                  <div className="mt-4 flex flex-1 flex-col">
+                    <h3 className="text-lg font-semibold leading-snug text-ink">{ep.title}</h3>
+                    <div className="mt-3 pt-1">
+                      {live ? (
+                        <a
+                          href={ep.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm font-semibold text-terracotta transition-colors hover:text-terracotta-hover"
+                        >
+                          Watch
+                          <IconArrow className="h-4 w-4" />
+                          <span className="sr-only">{ep.title}</span>
+                        </a>
+                      ) : (
+                        <span className="text-sm font-semibold text-body/45">Watch · coming soon</span>
+                      )}
+                    </div>
                   </div>
                 </article>
               </Reveal>

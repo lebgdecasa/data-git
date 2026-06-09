@@ -1,15 +1,38 @@
 // Recent episodes shown in the gallery.
-// EDIT HERE: each entry just needs the YouTube `url`. The card thumbnail and
-// the "Watch" button are derived from it automatically. No titles or guest
-// names are shown.
+// EDIT HERE: each entry has a YouTube `url` and a `title`. The card thumbnail
+// and the "Watch" button are derived from the url automatically.
 
 export const episodes = [
-  { id: 1, url: 'https://www.youtube.com/watch?v=JKb4zgG2ijw' },
-  { id: 2, url: 'https://www.youtube.com/watch?v=gWmcexUQl08' },
-  { id: 3, url: 'https://www.youtube.com/watch?v=U2Hapz7XWr8' },
-  { id: 4, url: 'https://www.youtube.com/watch?v=LjCwaYpkU1g' },
-  { id: 5, url: 'https://www.youtube.com/watch?v=IOhvff5v2Lo' },
-  { id: 6, url: 'https://www.youtube.com/watch?v=qkicL_uYSK4' },
+  {
+    id: 1,
+    title: 'WELLNESS TALK 🎙️ Eating Once a Day? How Binge Eating Disrupts Metabolism',
+    url: 'https://www.youtube.com/watch?v=JKb4zgG2ijw',
+  },
+  {
+    id: 2,
+    title: 'WELLNESS TALK 🎙️ Design a Life You Love',
+    url: 'https://www.youtube.com/watch?v=gWmcexUQl08',
+  },
+  {
+    id: 3,
+    title: "WELLNESS TALK 🎙️ How Lifestyle Choices Shape Future Generations' Health",
+    url: 'https://www.youtube.com/watch?v=U2Hapz7XWr8',
+  },
+  {
+    id: 4,
+    title: 'WELLNESS TALK 🎙️ From Soccer Injury to Multimillionaire',
+    url: 'https://www.youtube.com/watch?v=LjCwaYpkU1g',
+  },
+  {
+    id: 5,
+    title: 'WELLNESS TALK 🎙️ How to Turn Meditation into a Way of Life',
+    url: 'https://www.youtube.com/watch?v=IOhvff5v2Lo',
+  },
+  {
+    id: 6,
+    title: 'WELLNESS TALK 🎙️ Empowering Women Through Plant-Based Living',
+    url: 'https://www.youtube.com/watch?v=qkicL_uYSK4',
+  },
 ]
 
 // The hero features the first episode by default. Point this at any episode.
