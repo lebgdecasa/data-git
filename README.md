@@ -126,10 +126,16 @@ component under `src/components/`.
 
 ## Design tokens
 
-Centralized in `tailwind.config.js`:
+Centralized in `tailwind.config.js`. The palette is drawn from the podcast logo:
+a dark navy theme with cream text and an electric-blue accent.
 
-- Colors: `paper`, `sand`, `ink`, `body`, `terracotta` (+`terracotta-hover`),
-  `gold`, `line`, and a sparing `teal` (EPI accent).
+- Colors (token name = role): `paper` page background (deep navy `#0C1E38`),
+  `sand` raised surfaces/cards (lighter navy), `navy` deepest band, `ink` /
+  `cream` primary text (warm cream `#F4ECDB`), `body` secondary text (muted
+  slate), `terracotta` (+`terracotta-hover`) the electric-blue accent
+  (`#2F8FE2`), `gold` a light-azure secondary, `line` borders, sparing `teal`.
+- Note: token names are kept as semantic roles even though the values are now
+  cool (e.g. `terracotta` holds the brand blue).
 - Fonts: `font-display` (Fraunces), `font-sans` (Hanken Grotesk).
 
 ## Accessibility & quality notes

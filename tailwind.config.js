@@ -3,19 +3,24 @@ export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
-      // Warm editorial color tokens for The Wellness Billion.
+      // Dark palette drawn from the Wellness Billion podcast logo:
+      // deep navy background, electric-blue accent, warm cream text.
+      // Token names are kept as roles (paper = page surface, ink = primary
+      // text, terracotta = primary accent) even though the values are now cool.
       colors: {
-        paper: '#FBF7F0', // page background, warm bone
-        sand: '#F3EADC', // cards / alt sections
-        ink: '#241F1B', // headings, espresso
-        body: '#4A423B', // body text, warm brown-grey
+        paper: '#0C1E38', // page background, deep navy
+        sand: '#15294A', // raised surface / alt sections / cards (lighter navy)
+        navy: '#091627', // deepest band (gradients, footers)
+        ink: '#F4ECDB', // primary text / headings, warm cream
+        cream: '#F4ECDB', // explicit light token for text/elements on accent
+        body: '#AAB6C9', // secondary text, muted slate-blue
         terracotta: {
-          DEFAULT: '#C2603A', // primary accent / buttons
-          hover: '#A84E2C',
+          DEFAULT: '#2F8FE2', // primary accent, electric blue (the "BILLION" blue)
+          hover: '#4AA3EE', // brighter blue for link/hover
         },
-        gold: '#D9A441', // secondary accent, used sparingly
-        line: '#E4D9C8', // borders / rules
-        teal: '#14BEC1', // EPI teal, cool whisper accent for tiny details only
+        gold: '#5FB1EE', // secondary accent, light azure (used sparingly)
+        line: '#2A4670', // borders / rules on dark
+        teal: '#14BEC1', // cool whisper accent for tiny details only
       },
       fontFamily: {
         // Display serif carries the editorial feel.
@@ -27,9 +32,9 @@ export default {
         card: '18px',
       },
       boxShadow: {
-        // Soft warm shadows.
-        soft: '0 18px 40px -24px rgba(36, 31, 27, 0.35)',
-        lift: '0 28px 60px -28px rgba(36, 31, 27, 0.45)',
+        // Deep shadows for the dark theme.
+        soft: '0 18px 40px -24px rgba(3, 8, 18, 0.7)',
+        lift: '0 28px 60px -28px rgba(3, 8, 18, 0.85)',
       },
       maxWidth: {
         editorial: '72rem',

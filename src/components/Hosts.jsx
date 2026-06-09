@@ -24,7 +24,7 @@ function SocialLinks({ host }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${host.name} on ${link.label}`}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-paper text-ink transition-colors duration-200 hover:border-terracotta hover:bg-terracotta hover:text-paper"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-sand text-ink transition-colors duration-200 hover:border-terracotta hover:bg-terracotta hover:text-cream"
             >
               {Icon ? <Icon /> : <span className="text-xs font-semibold">{link.label[0]}</span>}
             </a>

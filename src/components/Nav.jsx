@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Wordmark from './ui/Wordmark'
+import LogoBadge from './ui/LogoBadge'
 
 const links = [
   { label: 'The Show', href: '#show' },
@@ -39,10 +40,13 @@ export default function Nav() {
         aria-label="Primary"
         className="container-editorial flex items-center justify-between px-5 py-3 sm:px-8"
       >
-        <a href="#top" className="flex flex-col leading-none" aria-label="The Wellness Billion, home">
-          <Wordmark />
-          <span className="mt-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-body/70">
-            from the team at EPI
+        <a href="#top" className="flex items-center gap-3" aria-label="The Wellness Billion, home">
+          <LogoBadge />
+          <span className="flex flex-col leading-none">
+            <Wordmark />
+            <span className="mt-1 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-body/70">
+              from the team at EPI
+            </span>
           </span>
         </a>
 

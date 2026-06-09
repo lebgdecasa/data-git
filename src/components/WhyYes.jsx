@@ -26,7 +26,7 @@ const values = [
 
 export default function WhyYes() {
   return (
-    <section className="section bg-sand">
+    <section className="section bg-paper">
       <div className="container-editorial">
         <Reveal>
           <p className="eyebrow">Why come on the show</p>
@@ -44,7 +44,7 @@ export default function WhyYes() {
             const Icon = v.icon
             return (
               <Reveal as="li" key={v.title} delay={(i % 4) * 80}>
-                <div className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper p-7 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-terracotta/40 hover:shadow-lift">
+                <div className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-sand p-7 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-terracotta/50 hover:shadow-lift">
                   {/* Index number trailed by a thin rule line. */}
                   <div className="flex items-center gap-4">
                     <span className="font-display text-2xl font-semibold leading-none text-terracotta">
@@ -53,7 +53,7 @@ export default function WhyYes() {
                     <span className="h-px flex-1 bg-line transition-colors duration-300 group-hover:bg-terracotta/30" />
                   </div>
 
-                  <span className="mt-6 flex h-11 w-11 items-center justify-center rounded-xl bg-terracotta/10 text-terracotta ring-1 ring-terracotta/10 transition-colors duration-300 group-hover:bg-terracotta group-hover:text-paper group-hover:ring-terracotta">
+                  <span className="mt-6 flex h-11 w-11 items-center justify-center rounded-xl bg-terracotta/10 text-terracotta ring-1 ring-terracotta/10 transition-colors duration-300 group-hover:bg-terracotta group-hover:text-cream group-hover:ring-terracotta">
                     <Icon className="h-5 w-5" />
                   </span>
 

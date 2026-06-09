@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Wordmark from './ui/Wordmark'
+import LogoBadge from './ui/LogoBadge'
 
 const navLinks = [
   { label: 'The Show', href: '#show' },
@@ -38,7 +39,10 @@ export default function Footer() {
       <div className="container-editorial px-5 py-14 sm:px-8">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
-            <Wordmark />
+            <div className="flex items-center gap-3">
+              <LogoBadge size="h-11 w-11" />
+              <Wordmark />
+            </div>
             <p className="mt-3 text-sm text-body/80">A podcast from EPI / Epineon.</p>
             <div className="mt-5">
               <EpiLogo />

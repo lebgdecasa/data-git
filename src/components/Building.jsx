@@ -3,9 +3,9 @@ import { pillars } from '../data/pillars'
 
 function StatusTag({ status }) {
   const styles = {
-    'Live today': 'bg-teal/15 text-[#0E8A8C] ring-1 ring-teal/30',
-    'In development': 'bg-gold/20 text-[#8A6712] ring-1 ring-gold/40',
-    Roadmap: 'bg-line/60 text-body ring-1 ring-line',
+    'Live today': 'bg-teal/15 text-teal ring-1 ring-teal/40',
+    'In development': 'bg-gold/15 text-gold ring-1 ring-gold/40',
+    Roadmap: 'bg-line/40 text-body ring-1 ring-line',
   }
   return (
     <span

@@ -68,7 +68,7 @@ export default function MediaPlaceholder({
 
       {play && (
         <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-paper/90 text-terracotta shadow-lift backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cream/95 text-paper shadow-lift backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
             <IconPlay className="ml-0.5 h-7 w-7" />
           </span>
         </span>
