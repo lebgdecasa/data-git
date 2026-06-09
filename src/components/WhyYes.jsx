@@ -44,11 +44,21 @@ export default function WhyYes() {
             const Icon = v.icon
             return (
               <Reveal as="li" key={v.title} delay={(i % 4) * 80}>
-                <div className="flex h-full flex-col rounded-card border border-line bg-paper p-6 shadow-soft">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-terracotta/10 text-terracotta">
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-semibold leading-snug text-ink">{v.title}</h3>
+                <div className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper p-7 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-terracotta/40 hover:shadow-lift">
+                  {/* Soft warm glow that surfaces on hover. */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-terracotta/15 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  />
+                  <div className="flex items-center justify-between">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-terracotta/15 to-gold/15 text-terracotta ring-1 ring-terracotta/10 transition-colors duration-300 group-hover:from-terracotta group-hover:to-terracotta-hover group-hover:text-paper group-hover:ring-terracotta">
+                      <Icon className="h-6 w-6" />
+                    </span>
+                    <span className="font-display text-2xl font-semibold text-line transition-colors duration-300 group-hover:text-terracotta/40">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-xl font-semibold leading-snug text-ink">{v.title}</h3>
                   <p className="mt-2 text-[0.95rem] leading-relaxed text-body">{v.body}</p>
                 </div>
               </Reveal>

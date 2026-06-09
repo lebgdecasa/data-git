@@ -45,7 +45,12 @@ export default function Hero() {
 
         <div className="md:col-span-6 lg:col-span-6">
           <Reveal delay={120}>
-            <figure className="relative">
+            <figure className="relative isolate">
+              {/* Soft warm glow behind the featured video. */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -inset-5 -z-10 rounded-[2.5rem] bg-gradient-to-tr from-terracotta/15 via-gold/10 to-transparent blur-3xl"
+              />
               <a
                 href={watchUrl || '#episodes'}
                 target={watchUrl ? '_blank' : undefined}

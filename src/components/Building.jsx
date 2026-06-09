@@ -32,7 +32,7 @@ export default function Building() {
         <ul className="mt-10 grid gap-5 sm:grid-cols-2">
           {pillars.map((pillar, i) => (
             <Reveal as="li" key={pillar.title} delay={(i % 2) * 90}>
-              <div className="flex h-full flex-col rounded-card border border-line bg-sand/50 p-6">
+              <div className="group flex h-full flex-col rounded-card border border-line bg-sand/50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-terracotta/30 hover:shadow-soft">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-semibold text-ink">{pillar.title}</h3>
                   <StatusTag status={pillar.status} />
