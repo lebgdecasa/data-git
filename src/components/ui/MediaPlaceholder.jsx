@@ -3,25 +3,30 @@ import { IconPlay } from './icons'
 
 /**
  * Image holder that reserves its aspect ratio (no layout shift) and falls back
- * to a warm placeholder block instead of a broken image when the file is not
- * present yet. Optionally overlays a circular play button.
+ * to a warm placeholder block instead of a broken image when no source loads.
+ * Optionally overlays a circular play button.
  *
  * Props:
  *  - src, alt: the image (alt is always required for real content).
+ *  - fallbackSrc: tried if `src` fails (e.g. YouTube maxres -> hq thumbnail).
  *  - ratio: 'video' (16:9) or 'square'.
  *  - play: show the circular play overlay.
  *  - className: extra classes for the outer frame.
  */
 export default function MediaPlaceholder({
   src,
+  fallbackSrc,
   alt = '',
   ratio = 'video',
   play = false,
   className = '',
 }) {
+  const sources = [src, fallbackSrc].filter(Boolean)
+  const [idx, setIdx] = useState(0)
   const [loaded, setLoaded] = useState(false)
-  const [failed, setFailed] = useState(false)
-  const showImage = src && !failed
+
+  const current = sources[idx]
+  const showImage = Boolean(current)
 
   const ratioClass = ratio === 'square' ? 'aspect-square' : 'aspect-video'
 
@@ -45,12 +50,16 @@ export default function MediaPlaceholder({
 
       {showImage && (
         <img
-          src={src}
+          key={current}
+          src={current}
           alt={alt}
           loading="lazy"
           decoding="async"
           onLoad={() => setLoaded(true)}
-          onError={() => setFailed(true)}
+          onError={() => {
+            setLoaded(false)
+            setIdx((i) => i + 1) // advance to next source, or none -> placeholder
+          }}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             loaded ? 'opacity-100' : 'opacity-0'
           }`}

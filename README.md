@@ -72,18 +72,18 @@ Place real images in `public/assets/images/` using the exact filenames listed in
 warm placeholder blocks render at the correct aspect ratio (no broken images, no
 layout shift).
 
-Expected files: `episode-featured.jpg`, `episode-01.jpg` … `episode-06.jpg`
-(all 16:9), `host-karim.jpg`, `host-yassin.jpg` (square), and optionally
+Episode and hero thumbnails are pulled automatically from each YouTube `url`
+in `src/data/episodes.js` (no episode image files needed). The remaining
+expected files are `host-karim.jpg`, `host-yassine.jpg` (square), and optionally
 `wordmark.svg` and `epi-logo.png`.
 
 ## Edit episode titles, hosts, and links
 
 All editable content lives in `src/data/`:
 
-- `src/data/episodes.js` — featured episode and the six gallery cards (title,
-  guest name, video URL, image filename). Placeholder `[VIDEO URL]` values show
-  a quiet "coming soon" instead of a broken link; real `http(s)` URLs become
-  live "Watch" links.
+- `src/data/episodes.js` — the six gallery cards and the hero featured episode
+  (title, guest name, YouTube `url`). The thumbnail and "Watch" button are
+  derived from the `url` automatically; an empty `guest` hides the guest line.
 - `src/data/hosts.js` — host names, roles, bios, and social links. Confirm
   spelling and handles; leave bios as placeholders until provided.
 - `src/data/pillars.js` — the four EPI technology pillars and their status tags

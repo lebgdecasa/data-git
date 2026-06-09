@@ -1,56 +1,47 @@
 // Recent episodes shown in the gallery.
-// EDIT HERE: replace the placeholder titles, guests, and video URLs with the
-// real ones. `image` maps to a file in public/assets/images/ (16:9).
-// Until you drop the images in, warm placeholder blocks render automatically.
-
-export const featuredEpisode = {
-  title: '[EPISODE TITLE]',
-  guest: '[GUEST NAME]',
-  url: '[VIDEO URL]',
-  image: '/assets/images/episode-featured.jpg',
-}
+// EDIT HERE: replace each placeholder `title` and `guest` with the real ones.
+// `url` is the YouTube link; the card thumbnail and "Watch" button are derived
+// from it automatically. Leave `guest` as an empty string to hide the guest
+// line until you have the name.
 
 export const episodes = [
   {
     id: 1,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-01.jpg',
+    title: 'Episode 1',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=JKb4zgG2ijw',
   },
   {
     id: 2,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-02.jpg',
+    title: 'Episode 2',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=gWmcexUQl08',
   },
   {
     id: 3,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-03.jpg',
+    title: 'Episode 3',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=U2Hapz7XWr8',
   },
   {
     id: 4,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-04.jpg',
+    title: 'Episode 4',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=LjCwaYpkU1g',
   },
   {
     id: 5,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-05.jpg',
+    title: 'Episode 5',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=IOhvff5v2Lo',
   },
   {
     id: 6,
-    title: '[EPISODE TITLE]',
-    guest: '[GUEST NAME]',
-    url: '[VIDEO URL]',
-    image: '/assets/images/episode-06.jpg',
+    title: 'Episode 6',
+    guest: '',
+    url: 'https://www.youtube.com/watch?v=qkicL_uYSK4',
   },
 ]
+
+// The hero features the first episode by default. Point this at any episode.
+export const featuredEpisode = episodes[0]

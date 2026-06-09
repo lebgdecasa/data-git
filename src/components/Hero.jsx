@@ -1,12 +1,16 @@
 import Reveal from './ui/Reveal'
 import MediaPlaceholder from './ui/MediaPlaceholder'
 import { featuredEpisode } from '../data/episodes'
+import { youTubeThumb, youTubeThumbHq } from '../lib/youtube'
 
 // Hero headline (primary). Alternates you may swap in:
 //  - "The conversation about living well, far longer."
 //  - "Wellness, without the obsession."
 
 export default function Hero() {
+  const watchUrl = featuredEpisode?.url
+  const guestLabel = featuredEpisode?.guest ? ` with ${featuredEpisode.guest}` : ''
+
   return (
     <section id="show" className="section pb-12 pt-28 md:pb-20 md:pt-36">
       <div className="container-editorial grid items-center gap-12 md:grid-cols-12 md:gap-10">
@@ -27,7 +31,9 @@ export default function Hero() {
                 Apply to be a guest
               </a>
               <a
-                href="#episodes"
+                href={watchUrl || '#episodes'}
+                target={watchUrl ? '_blank' : undefined}
+                rel={watchUrl ? 'noopener noreferrer' : undefined}
                 className="group inline-flex items-center gap-2 text-sm font-semibold text-ink"
               >
                 <span className="border-b border-terracotta/50 pb-0.5 transition-colors group-hover:border-terracotta">
@@ -41,16 +47,23 @@ export default function Hero() {
         <div className="md:col-span-6 lg:col-span-6">
           <Reveal delay={120}>
             <figure className="relative">
-              <MediaPlaceholder
-                src={featuredEpisode.image}
-                alt={`The Wellness Billion featured episode with ${featuredEpisode.guest}`}
-                ratio="video"
-                play
-                className="shadow-lift ring-1 ring-line"
-              />
-              <figcaption className="mt-3 text-sm text-body/80">
-                Featured episode · {featuredEpisode.guest}
-              </figcaption>
+              <a
+                href={watchUrl || '#episodes'}
+                target={watchUrl ? '_blank' : undefined}
+                rel={watchUrl ? 'noopener noreferrer' : undefined}
+                className="block rounded-card"
+                aria-label={`Watch the featured episode${guestLabel}`}
+              >
+                <MediaPlaceholder
+                  src={youTubeThumb(watchUrl)}
+                  fallbackSrc={youTubeThumbHq(watchUrl)}
+                  alt={`The Wellness Billion featured episode${guestLabel}`}
+                  ratio="video"
+                  play
+                  className="shadow-lift ring-1 ring-line"
+                />
+              </a>
+              <figcaption className="mt-3 text-sm text-body/80">Featured episode</figcaption>
             </figure>
           </Reveal>
         </div>
