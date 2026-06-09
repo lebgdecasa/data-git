@@ -17,7 +17,7 @@ export default function Hero() {
           <Reveal>
             <p className="eyebrow">The Wellness Billion · A Podcast</p>
             <h1 className="mt-5 font-display text-[2.6rem] font-semibold leading-[1.04] tracking-[-0.01em] text-ink sm:text-6xl lg:text-[4.1rem]">
-              Come share your story on The Wellness Billion.
+              Come share your story on <span className="text-terracotta">The Wellness Billion.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-body">
               A podcast for the voices redefining wellness, without the obsession. We sit down with

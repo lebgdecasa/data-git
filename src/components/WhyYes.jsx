@@ -45,21 +45,26 @@ export default function WhyYes() {
             return (
               <Reveal as="li" key={v.title} delay={(i % 4) * 80}>
                 <div className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-paper p-7 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-terracotta/40 hover:shadow-lift">
-                  {/* Soft warm glow that surfaces on hover. */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-terracotta/15 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  />
-                  <div className="flex items-center justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-terracotta/15 to-gold/15 text-terracotta ring-1 ring-terracotta/10 transition-colors duration-300 group-hover:from-terracotta group-hover:to-terracotta-hover group-hover:text-paper group-hover:ring-terracotta">
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <span className="font-display text-2xl font-semibold text-line transition-colors duration-300 group-hover:text-terracotta/40">
+                  {/* Index number trailed by a thin rule line. */}
+                  <div className="flex items-center gap-4">
+                    <span className="font-display text-2xl font-semibold leading-none text-terracotta">
                       {String(i + 1).padStart(2, '0')}
                     </span>
+                    <span className="h-px flex-1 bg-line transition-colors duration-300 group-hover:bg-terracotta/30" />
                   </div>
-                  <h3 className="mt-6 text-xl font-semibold leading-snug text-ink">{v.title}</h3>
+
+                  <span className="mt-6 flex h-11 w-11 items-center justify-center rounded-xl bg-terracotta/10 text-terracotta ring-1 ring-terracotta/10 transition-colors duration-300 group-hover:bg-terracotta group-hover:text-paper group-hover:ring-terracotta">
+                    <Icon className="h-5 w-5" />
+                  </span>
+
+                  <h3 className="mt-5 text-xl font-semibold leading-snug text-ink">{v.title}</h3>
                   <p className="mt-2 text-[0.95rem] leading-relaxed text-body">{v.body}</p>
+
+                  {/* Gradient underline that sweeps in on hover. */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-terracotta to-terracotta/0 transition-transform duration-500 group-hover:scale-x-100"
+                  />
                 </div>
               </Reveal>
             )

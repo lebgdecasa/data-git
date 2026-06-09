@@ -54,9 +54,13 @@
 }
 
 @layer components {
-  /* Editorial eyebrow: small, uppercase, letter-spaced. */
+  /* Editorial eyebrow: small uppercase label with a leading rule line. */
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.22em] text-terracotta;
+    @apply inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-terracotta;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-current opacity-60;
   }
 
   /* Primary pill button. */
