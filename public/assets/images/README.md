@@ -19,11 +19,26 @@ badge simply hides itself.
 
 ## Episode thumbnails
 
-Episode card and hero thumbnails are pulled automatically from each YouTube
-video (a hotlink, derived from the `url` in `src/data/episodes.js`). You do not
-need to add episode image files. If you would rather host your own stills, swap
-the thumbnail logic in `src/components/Episodes.jsx` / `Hero.jsx` and drop
-`episode-*.jpg` files here instead.
+Each episode card uses a **local file if present, otherwise the YouTube
+thumbnail** (hotlinked from the `url` in `src/data/episodes.js`). So you have two
+options:
+
+- **Do nothing** — the YouTube thumbnail shows automatically in any browser.
+- **Host them yourself** (recommended if the hotlink is blocked or a video is
+  private) — save the stills here as `episode-01.jpg` … `episode-06.jpg`
+  (16:9, ~1280×720). They take priority and the page no longer depends on
+  YouTube. To grab each one, open its thumbnail URL and "Save image as":
+
+  | File             | Thumbnail URL                                            |
+  | ---------------- | -------------------------------------------------------- |
+  | `episode-01.jpg` | https://i.ytimg.com/vi/JKb4zgG2ijw/maxresdefault.jpg     |
+  | `episode-02.jpg` | https://i.ytimg.com/vi/gWmcexUQl08/maxresdefault.jpg     |
+  | `episode-03.jpg` | https://i.ytimg.com/vi/U2Hapz7XWr8/maxresdefault.jpg     |
+  | `episode-04.jpg` | https://i.ytimg.com/vi/LjCwaYpkU1g/maxresdefault.jpg     |
+  | `episode-05.jpg` | https://i.ytimg.com/vi/IOhvff5v2Lo/maxresdefault.jpg     |
+  | `episode-06.jpg` | https://i.ytimg.com/vi/qkicL_uYSK4/maxresdefault.jpg     |
+
+  (`episode-01.jpg` is also the hero's featured thumbnail.)
 
 Notes:
 

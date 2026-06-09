@@ -59,8 +59,8 @@ export default function Hero() {
                 aria-label="Watch the featured episode"
               >
                 <MediaPlaceholder
-                  src={youTubeThumb(watchUrl)}
-                  fallbackSrc={youTubeThumbHq(watchUrl)}
+                  src={featuredEpisode?.image}
+                  fallbackSrc={[youTubeThumb(watchUrl), youTubeThumbHq(watchUrl)]}
                   alt="The Wellness Billion featured episode"
                   ratio="video"
                   play

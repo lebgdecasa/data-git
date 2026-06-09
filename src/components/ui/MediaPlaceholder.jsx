@@ -21,7 +21,10 @@ export default function MediaPlaceholder({
   play = false,
   className = '',
 }) {
-  const sources = [src, fallbackSrc].filter(Boolean)
+  // `fallbackSrc` may be a single URL or an ordered list of fallbacks.
+  const sources = [src, ...(Array.isArray(fallbackSrc) ? fallbackSrc : [fallbackSrc])].filter(
+    Boolean,
+  )
   const [idx, setIdx] = useState(0)
   const [loaded, setLoaded] = useState(false)
 

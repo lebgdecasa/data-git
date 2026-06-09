@@ -32,8 +32,8 @@ export default function Episodes() {
                     tabIndex={live ? undefined : -1}
                   >
                     <MediaPlaceholder
-                      src={youTubeThumb(ep.url)}
-                      fallbackSrc={youTubeThumbHq(ep.url)}
+                      src={ep.image}
+                      fallbackSrc={[youTubeThumb(ep.url), youTubeThumbHq(ep.url)]}
                       alt={ep.title}
                       ratio="video"
                       play
