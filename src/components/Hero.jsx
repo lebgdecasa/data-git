@@ -9,7 +9,6 @@ import { youTubeThumb, youTubeThumbHq } from '../lib/youtube'
 
 export default function Hero() {
   const watchUrl = featuredEpisode?.url
-  const guestLabel = featuredEpisode?.guest ? ` with ${featuredEpisode.guest}` : ''
 
   return (
     <section id="show" className="section pb-12 pt-28 md:pb-20 md:pt-36">
@@ -52,12 +51,12 @@ export default function Hero() {
                 target={watchUrl ? '_blank' : undefined}
                 rel={watchUrl ? 'noopener noreferrer' : undefined}
                 className="block rounded-card"
-                aria-label={`Watch the featured episode${guestLabel}`}
+                aria-label="Watch the featured episode"
               >
                 <MediaPlaceholder
                   src={youTubeThumb(watchUrl)}
                   fallbackSrc={youTubeThumbHq(watchUrl)}
-                  alt={`The Wellness Billion featured episode${guestLabel}`}
+                  alt="The Wellness Billion featured episode"
                   ratio="video"
                   play
                   className="shadow-lift ring-1 ring-line"
