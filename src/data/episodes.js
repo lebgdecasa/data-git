@@ -5,32 +5,32 @@
 export const episodes = [
   {
     id: 1,
-    title: 'WELLNESS TALK 🎙️ Eating Once a Day? How Binge Eating Disrupts Metabolism',
+    title: 'Eating Once a Day? How Binge Eating Disrupts Metabolism',
     url: 'https://www.youtube.com/watch?v=JKb4zgG2ijw',
   },
   {
     id: 2,
-    title: 'WELLNESS TALK 🎙️ Design a Life You Love',
+    title: 'Design a Life You Love',
     url: 'https://www.youtube.com/watch?v=gWmcexUQl08',
   },
   {
     id: 3,
-    title: "WELLNESS TALK 🎙️ How Lifestyle Choices Shape Future Generations' Health",
+    title: "How Lifestyle Choices Shape Future Generations' Health",
     url: 'https://www.youtube.com/watch?v=U2Hapz7XWr8',
   },
   {
     id: 4,
-    title: 'WELLNESS TALK 🎙️ From Soccer Injury to Multimillionaire',
+    title: 'From Soccer Injury to Multimillionaire',
     url: 'https://www.youtube.com/watch?v=LjCwaYpkU1g',
   },
   {
     id: 5,
-    title: 'WELLNESS TALK 🎙️ How to Turn Meditation into a Way of Life',
+    title: 'How to Turn Meditation into a Way of Life',
     url: 'https://www.youtube.com/watch?v=IOhvff5v2Lo',
   },
   {
     id: 6,
-    title: 'WELLNESS TALK 🎙️ Empowering Women Through Plant-Based Living',
+    title: 'Empowering Women Through Plant-Based Living',
     url: 'https://www.youtube.com/watch?v=qkicL_uYSK4',
   },
 ]
