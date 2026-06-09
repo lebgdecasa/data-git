@@ -1,104 +1,147 @@
-Let's recap the `git` commands you need to remember in order to work on the challenges during the bootcamp.
+# The Wellness Billion — guest-invitation landing page
 
-## Status
+A single-page marketing site that invites wellness creators, coaches, and
+practitioners to apply as guests on **The Wellness Billion**, a podcast from the
+team at **EPI / Epineon**. The one conversion goal is a completed application
+form; every section builds toward that submission.
 
-First, let's make sure that our working directory is **clean**:
+Built with **Vite + React (JavaScript) + Tailwind CSS**.
 
-```bash
-git status
-```
-
-If you get the following result, then you're all set and can start working on this challenge:
-
-```text
-On branch master
-Your branch is up to date with 'origin/master'.
-
-nothing to commit, working tree clean
-```
-
-If you do not get this message, you need to first commit / clean some other challenges before you can start. Do not hesitate to raise a ticket to get some help from a TA over the first few days. `git` can be hard, so please do ask!
-
-## First commit
-
-Let's create a Python file:
+## Run it
 
 ```bash
-touch today.py
+npm install
+npm run dev      # start the dev server (Vite prints the local URL)
+npm run build    # production build into dist/
+npm run preview  # preview the production build
 ```
 
-Open this file in your text editor. You will need to declare and implement a function called `my_name_is`, which doesn't take any parameter and returns a constant of type `str`. The value of this constant will be your GitHub nickname.
+The page works out of the box with no configuration: the form is fully
+previewable even before you add an endpoint or any images.
 
-Run `make` until one test passes (no need for the second one to be successful, we'll take care of it in a second).
+## Configure the form endpoint
 
-```text
-tests/test_git.py::TestGit::test_hi_my_name_is PASSED
-tests/test_git.py::TestGit::test_my_buddy_is   FAILED
-```
+The application form POSTs its JSON payload to the URL in
+`VITE_FORM_ENDPOINT`.
 
-Good, you made some progress. It's time to pause and save your progression. Just like a checkpoint!
+1. Copy `.env.example` to `.env`.
+2. Set `VITE_FORM_ENDPOINT` to your endpoint. A **Google Apps Script web-app
+   URL** backed by a Google Sheet works well.
 
 ```bash
-git add today.py
-git commit -m "Implement my_name_is function"
-git push origin master
+cp .env.example .env
+# then edit .env:
+# VITE_FORM_ENDPOINT=https://script.google.com/macros/s/XXXX/exec
 ```
 
-Kitt should pick up the change and show 50% progress. Good job!
+- **Empty endpoint (default):** submissions are logged to the browser console
+  and the success confirmation still shows, so you can preview the whole flow.
+- **Payload:** every form field plus `qualified` (boolean), `tier`
+  (`Macro` / `Micro/Mid` / `Below threshold`), and an ISO `timestamp`.
+- The request is sent with `Content-Type: text/plain;charset=utf-8` (the body is
+  still JSON). This avoids a CORS preflight that Google Apps Script does not
+  answer. In your Apps Script, read the body with
+  `JSON.parse(e.postData.contents)`.
+- No secrets are hardcoded. `.env` is gitignored.
 
-## Second commit
+### Qualification (computed on submit, never shown to the applicant)
 
-Let's start solving the second test. To do so, you need to declare and implement a function called `my_buddy_is`, which doesn't take any parameter and returns a constant `str`. The value of the constant will be your buddy's GitHub nickname (or yours if you don't have a buddy today :().
+Everyone can submit and no one is blocked. Each entry is scored behind the
+scenes by audience size only:
 
-You can use this useful command to check what has changed in the file:
+| Audience size        | `qualified` | `tier`          |
+| -------------------- | ----------- | --------------- |
+| Under 10,000         | `false`     | Below threshold |
+| 10,000 to 50,000     | `true`      | Micro/Mid       |
+| 50,000 to 500,000    | `true`      | Macro           |
+| 500,000+             | `true`      | Macro           |
 
-```bash
-git diff
+The other fields are captured as context for human review only.
+
+### Optional fast-track (off by default)
+
+In `src/components/ApplyForm.jsx`, `SHOW_FASTTRACK` is `false`. Set it to `true`
+to show a "Grab a time now" button on success **only** to qualified applicants.
+The scheduling link is `FASTTRACK_URL` in the same file. Leave it off unless you
+specifically want self-booking.
+
+## Drop in image assets
+
+Place real images in `public/assets/images/` using the exact filenames listed in
+[`public/assets/images/README.md`](public/assets/images/README.md). Until then,
+warm placeholder blocks render at the correct aspect ratio (no broken images, no
+layout shift).
+
+Expected files: `episode-featured.jpg`, `episode-01.jpg` … `episode-06.jpg`
+(all 16:9), `host-karim.jpg`, `host-yassin.jpg` (square), and optionally
+`wordmark.svg` and `epi-logo.png`.
+
+## Edit episode titles, hosts, and links
+
+All editable content lives in `src/data/`:
+
+- `src/data/episodes.js` — featured episode and the six gallery cards (title,
+  guest name, video URL, image filename). Placeholder `[VIDEO URL]` values show
+  a quiet "coming soon" instead of a broken link; real `http(s)` URLs become
+  live "Watch" links.
+- `src/data/hosts.js` — host names, roles, bios, and social links. Confirm
+  spelling and handles; leave bios as placeholders until provided.
+- `src/data/pillars.js` — the four EPI technology pillars and their status tags
+  (`Live today` / `In development` / `Roadmap`).
+
+Fixed copy (hero, mission, value props, steps) lives directly in the relevant
+component under `src/components/`.
+
+## Project structure
+
+```
+.
+├── index.html                 # Google Fonts (Fraunces + Hanken Grotesk), root div
+├── tailwind.config.js         # color + font tokens, radii, shadows, animations
+├── postcss.config.js
+├── vite.config.js
+├── .env.example               # VITE_FORM_ENDPOINT
+├── public/
+│   └── assets/images/         # drop real images here (+ filenames README)
+└── src/
+    ├── main.jsx
+    ├── App.jsx                # composes all sections
+    ├── index.css             # Tailwind layers, base type, paper-grain, focus
+    ├── hooks/useReveal.js    # IntersectionObserver fade-up
+    ├── data/                 # episodes, hosts, pillars (edit these)
+    └── components/
+        ├── Nav.jsx           # sticky, transparent over hero, mobile menu
+        ├── Hero.jsx
+        ├── Episodes.jsx
+        ├── WhyYes.jsx
+        ├── Hosts.jsx
+        ├── Mission.jsx
+        ├── Building.jsx
+        ├── Expect.jsx
+        ├── ApplyForm.jsx     # the conversion form + qualification logic
+        ├── FinalCTA.jsx
+        ├── Footer.jsx
+        └── ui/               # Wordmark, Reveal, MediaPlaceholder, icons
 ```
 
-If you are satisfied, you can now commit & push to GitHub:
+## Design tokens
 
-```bash
-git add today.py
-git commit -m "Implement my_buddy_is function"
-git push origin master
-```
+Centralized in `tailwind.config.js`:
 
-## Making `pylint` happy
+- Colors: `paper`, `sand`, `ink`, `body`, `terracotta` (+`terracotta-hover`),
+  `gold`, `line`, and a sparing `teal` (EPI accent).
+- Fonts: `font-display` (Fraunces), `font-sans` (Hanken Grotesk).
 
-At this point of the challenge, you should have 3 style errors:
+## Accessibility & quality notes
 
-```text
-C0114: Missing module docstring (missing-module-docstring)
-C0116: Missing function or method docstring (missing-function-docstring)
-C0116: Missing function or method docstring (missing-function-docstring)
-```
+- Semantic landmarks (`header`, `main`, `nav`, `footer`), real alt text, visible
+  focus rings, a skip link, and a keyboard-usable menu and form.
+- Reduced-motion users get no animations.
+- All imagery reserves its aspect ratio to avoid layout shift.
+- No invented testimonials, statistics, or follower counts anywhere.
 
-You are missing [docstrings](https://www.python.org/dev/peps/pep-0257/). One for the module, and one for each function. A docstring gives context / documentation to a module or function.
+---
 
-To fix the first error, add a docstring on the **first line** of `today.py`:
-
-```python
-"""A module computing buddy pair names for the day"""
-```
-
-Run `make` again, you should have one less style error.
-
-Repeat this by adding a [one-line docstring](https://www.python.org/dev/peps/pep-0257/#one-line-docstrings) for the two functions.
-
-
-When you are done, time to perform the third commit of the challenge:
-
-```bash
-git diff
-```
-
-```bash
-git add today.py
-git commit -m "Fix style issues, should get a 'Good Style' now :pray:"
-git push origin master
-```
-
-## Conclusion
-
-You now know how to navigate Kitt, position yourself on a challenge, open it in a text editor and work on it, switching to the terminal to run `make` and some git commands. Congratulations!
+> Note: this repository previously held a Le Wagon git warmup challenge. Those
+> files (`today.py`, `tests/`, `Makefile`) are left in place and are unrelated
+> to this site.
