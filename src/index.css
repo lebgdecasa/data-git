@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Respect users who prefer reduced motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    @apply bg-paper text-body font-sans antialiased;
+    font-feature-settings: 'kern', 'liga';
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    text-wrap: balance;
+  }
+
+  /* Visible, consistent focus state for keyboard users. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-terracotta ring-offset-2 ring-offset-paper;
+  }
+
+  /* Skip link, revealed on focus. */
+  .skip-link {
+    @apply sr-only;
+  }
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[100] rounded-full bg-ink px-5 py-2 text-sm font-semibold text-paper;
+  }
+}
+
+@layer components {
+  /* Editorial eyebrow: small, uppercase, letter-spaced. */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-terracotta;
+  }
+
+  /* Primary pill button. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper shadow-soft transition-colors duration-200 hover:bg-terracotta-hover focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  /* Secondary / ghost button. */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-semibold text-ink transition-colors duration-200 hover:bg-sand;
+  }
+
+  /* Thin horizontal editorial rule. */
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+
+  /* Section vertical rhythm. */
+  .section {
+    @apply px-5 py-20 sm:px-8 md:py-28;
+  }
+
+  .container-editorial {
+    @apply mx-auto w-full max-w-editorial;
+  }
+}
+
+@layer utilities {
+  /* Very subtle paper-grain overlay applied to the page shell. */
+  .paper-grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  }
+
+  /* Drop-cap for the editorial mission opener. */
+  .dropcap::first-letter {
+    @apply float-left mr-3 mt-2 font-display text-7xl font-semibold leading-[0.7] text-terracotta sm:text-8xl;
+  }
+}
