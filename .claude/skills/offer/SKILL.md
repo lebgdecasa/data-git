@@ -19,4 +19,4 @@ Forge a Grand Slam Offer for the niche/idea in the arguments. If none passed, as
 7. **Friction plan:** which of the 5 levers (qualifications, info asks, steps, forced consumption, ad length) to set LOW now, and the trigger for raising each (e.g., "calendar >80% full").
 8. **The one-sentence offer** in the standard shape: *"I will get [avatar] [dream outcome] in [interval] or [risk reversal] — [wrapper terms]."*
 9. **Verdict block:** 🔴 Devil's Advocate stress-test (believability, delivery cost, refund exposure) → Consensus → Final Recommendation → Next 3 Actions (first one is always: put the offer in front of N real humans by DATE).
-10. **Save** to `foundry/war-room/ideas/<slug>-offer.md` and log the decision if the owner adopts it.
+10. **Save** to `foundry/embassy/ideas/<slug>-offer.md` and log the decision if the owner adopts it.

@@ -7,7 +7,7 @@ saves 10–12 hours of drift. Plans land in `ops/weeks/YYYY-Wnn.md`.
 
 1. **Look Back (15 min)** — last week's plan: done / not done / why. Unanswered emails & messages.
    Name last week's #1 constraint → adopt ONE process fix to prevent recurrence.
-2. **Look Forward (10 min)** — next 1–3 months: active decisions (`war-room/decisions.md`),
+2. **Look Forward (10 min)** — next 1–3 months: active decisions (`embassy/decisions.md`),
    pipeline follow-ups (`ops/pipeline.md`), upcoming deadlines. Pull this week's share forward.
 3. **Prioritize (10 min)** — force-rank. Top 1–3 = PRIORITIES. Schedule other stuff around
    priorities, never priorities around other stuff.

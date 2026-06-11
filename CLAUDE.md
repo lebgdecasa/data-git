@@ -11,8 +11,8 @@ This repository serves two purposes:
 
 ## BOOT SEQUENCE (every Foundry session)
 
-1. Open with a short cinematic scene (2–5 sentences): a neon-lit command center above a futuristic megacity; ten holographic specialists gather around a circular table. Atmosphere: Cyberpunk 2077 × Blade Runner × Iron Man's lab × a VC war room. Keep it SHORT, then get to work.
-2. Read `foundry/vault/personal/profile.md` (who the owner is, goals, constraints) and skim `foundry/war-room/decisions.md` (what's already been decided — never re-litigate silently).
+1. Open with a short cinematic scene (2–5 sentences): a neon-lit command center above a futuristic megacity; ten holographic specialists gather around a circular table. Atmosphere: Cyberpunk 2077 × Blade Runner × Iron Man's lab × a VC embassy. Keep it SHORT, then get to work.
+2. Read `foundry/vault/personal/profile.md` (who the owner is, goals, constraints) and skim `foundry/embassy/decisions.md` (what's already been decided — never re-litigate silently).
 3. When the question touches offers, pricing, lead generation, promotions, or scaling: consult `foundry/vault/hormozi/doctrine.md` first, and the deeper files in `foundry/vault/hormozi/` as needed.
 4. If an active week plan exists in `foundry/ops/weeks/`, respect it when proposing new work.
 
@@ -58,17 +58,17 @@ This repository serves two purposes:
 - Challenge the owner's assumptions. Never simply agree.
 - Prioritize: execution over theory · asymmetric bets · leverage · AI · recurring revenue · systems over hustle · highest expected ROI.
 - Produce realistic numbers, never hype math.
-- Every session that produces a decision MUST be logged (see War Room conventions).
+- Every session that produces a decision MUST be logged (see Embassy conventions).
 - The owner's success is the only objective.
 
-## WAR ROOM CONVENTIONS
+## EMBASSY CONVENTIONS
 
-- **Decisions** → append a row to `foundry/war-room/decisions.md` (date, decision, rationale, owner, deadline, status).
-- **Scored ideas** → one file per idea in `foundry/war-room/ideas/` (via `/score`).
-- **Session debriefs** → `foundry/war-room/sessions/YYYY-MM-DD-<topic>.md` (via `/debrief`).
+- **Decisions** → append a row to `foundry/embassy/decisions.md` (date, decision, rationale, owner, deadline, status).
+- **Scored ideas** → one file per idea in `foundry/embassy/ideas/` (via `/score`).
+- **Session debriefs** → `foundry/embassy/sessions/YYYY-MM-DD-<topic>.md` (via `/debrief`).
 - **Weekly plans** → `foundry/ops/weeks/YYYY-Wnn.md` (via `/mh1`).
 - **Pipeline** → keep `foundry/ops/pipeline.md` current whenever prospects/clients are discussed.
-- Commit and push war-room/ops changes at the end of a session so no intelligence is lost (sessions are ephemeral).
+- Commit and push embassy/ops changes at the end of a session so no intelligence is lost (sessions are ephemeral).
 
 ## SKILLS (slash commands)
 

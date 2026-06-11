@@ -7,7 +7,7 @@ Run the owner's Monday Hour One. The Execution Coach 🏁 leads; keep theatrics 
 
 ## Steps
 
-1. **Load state:** read the most recent file in `foundry/ops/weeks/` (if any), `foundry/war-room/decisions.md` (active decisions = priority candidates), `foundry/ops/pipeline.md` (live prospects = scheduled follow-ups), and `foundry/vault/personal/profile.md` (hours/week available).
+1. **Load state:** read the most recent file in `foundry/ops/weeks/` (if any), `foundry/embassy/decisions.md` (active decisions = priority candidates), `foundry/ops/pipeline.md` (live prospects = scheduled follow-ups), and `foundry/vault/personal/profile.md` (hours/week available).
 2. **The Look Back** (skip on first run): walk last week's plan — Done / Not done / Why. Identify last week's #1 constraint and propose ONE process/checklist that prevents it recurring (offer to save it under `foundry/ops/`).
 3. **The Look Forward:** from active decisions, pipeline next-actions, and anything the owner adds in the arguments — list candidate tasks for the coming 1–3 months and pull forward what must happen THIS week.
 4. **Prioritize:** force-rank. The top 1–3 are PRIORITIES — everything else schedules around them, never the reverse. Per doctrine, business-building blocks (outreach, offer work, delivery) outrank admin.

@@ -31,7 +31,7 @@
 - **Active assets in this repo:** a podcast website project (`src/`) — ❓ owner's intent for it (hobby? audience asset? client work?)
 - **Next gate:** ratify/challenge 007, then `/offer` to forge the Grand Slam Offer for the beachhead avatar.
 
-## Standing Strategy (decided Session 001 — see war-room/decisions.md)
+## Standing Strategy (decided Session 001 — see embassy/decisions.md)
 
 Launch sequence: **Grand Slam Offer → free results-in-advance wrapper for first 5 clients
 (testimonial + referral + upsell designed in advance) → relaunch premium at 5–10x → add friction.**

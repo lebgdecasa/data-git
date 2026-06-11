@@ -11,7 +11,7 @@ Open this repository in any Claude Code surface — [claude.ai/code](https://cla
 |---|---|
 | `/board should I niche down to dental clinics?` | The 10 agents debate it, then deliver Consensus / Disagreements / Final Recommendation / Next 3 Actions |
 | `/board --deep <question>` | Agents spawn in parallel with live web research before the debate |
-| `/score AI receptionist for Moroccan clinics` | Full gauntlet: 10 scores + market analysis + paths to $1k/$10k/$100k + 30/90/365-day plans, saved to the war room |
+| `/score AI receptionist for Moroccan clinics` | Full gauntlet: 10 scores + market analysis + paths to $1k/$10k/$100k + 30/90/365-day plans, saved to the embassy |
 | `/offer cold-email agency for French SaaS` | Grand Slam Offer forged with the value equation + free/discount/premium wrapper decision |
 | `/mh1` | Monday Hour One: plan and time-block your week, saved to `ops/weeks/` |
 | `/debrief` | End of session: log decisions, update files, commit & push |
@@ -25,7 +25,7 @@ foundry/
 ├── vault/                  # Knowledge the board consults
 │   ├── hormozi/            #   Distilled doctrine (your uploaded PDFs + published frameworks)
 │   └── personal/           #   YOUR profile, goals, constraints — keep this updated
-├── war-room/               # The board's memory
+├── embassy/               # The board's memory
 │   ├── decisions.md        #   Every decision ever made (never re-litigated silently)
 │   ├── ideas/              #   Scored business ideas, one file each
 │   └── sessions/           #   Session debriefs

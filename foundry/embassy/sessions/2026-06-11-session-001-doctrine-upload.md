@@ -26,7 +26,7 @@ personal tool in this repo. One decision pending on the owner: the niche.
 ## Artifacts produced
 
 The Foundry v1: `CLAUDE.md` (OS) · `foundry/vault/` (doctrine + profile) · `.claude/skills/`
-(/board /score /offer /mh1 /debrief) · `.claude/agents/` (10 board members) · war room + ops.
+(/board /score /offer /mh1 /debrief) · `.claude/agents/` (10 board members) · embassy + ops.
 
 ## Open questions for next session
 
