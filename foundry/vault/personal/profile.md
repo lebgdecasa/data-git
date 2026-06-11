@@ -16,20 +16,20 @@
 - Maximize expected long-term wealth while minimizing unnecessary risk
 - Preference: low startup cost · high margin · strong automation potential · recurring revenue
 
-## Constraints & Resources
+## Constraints & Resources (intake 2026-06-11)
 
-- ❓ Capital available to deploy (amount comfortable to risk):
-- ❓ Hours/week available for the venture:
-- ❓ Currently employed / freelancing? Runway in months:
-- ❓ Existing network (industries, past clients, warm contacts — the warm-outreach pond):
+- **Capital: $0 deployable.** Hard constraint — bootstrap only: warm/manual outreach, free tiers, sweat. First revenue funds the first tools.
+- **Hours: 10–20h/week, evenings + weekends** (Morocco GMT+1: evenings overlap EU evenings and US afternoons; Gulf calls need weekend mornings).
+- **Employed full-time** (stable income → patience affordable; time, not money, is the scarce resource). ⚠️ Open item: check employment contract for moonlighting/non-compete clauses before first paid client.
+- **Warm network:** Moroccan local businesses + corporate/engineering contacts. NO warm e-commerce network (despite e-com background). Self-assesses as "mostly cold" beyond the first ring.
 - ❓ Existing assets (audiences, email lists, domains, prior products, portfolios):
-- ❓ Payment rails status (Stripe-alternative needed from Morocco: Paddle / Lemon Squeezy / US LLC / Payoneer — undecided):
+- Payment rails: local MAD collection (bank transfer/cash) fine for the beachhead phase; merchant-of-record question (Paddle / Lemon Squeezy / US LLC) deferred to EU-export phase.
 
 ## Current Venture State
 
-- **Phase:** Pre-niche. No offer, no pipeline yet.
+- **Phase:** Beachhead niche recommended (decision 007) — awaiting owner ratification.
 - **Active assets in this repo:** a podcast website project (`src/`) — ❓ owner's intent for it (hobby? audience asset? client work?)
-- **Open decision (Session 001):** pick the niche / bring the board your inventory so it can engineer the Grand Slam Offer.
+- **Next gate:** ratify/challenge 007, then `/offer` to forge the Grand Slam Offer for the beachhead avatar.
 
 ## Standing Strategy (decided Session 001 — see war-room/decisions.md)
 
