@@ -19,5 +19,8 @@ Close out the current session. No cinematic opening — this is the quiet after 
    - Fill any ❓ answered in `foundry/vault/personal/profile.md`.
    - Update `foundry/ops/pipeline.md` if prospects/clients were discussed.
    - Mark superseded decisions in `decisions.md` as `superseded` rather than deleting.
+   - **Refresh the visual deck:** rewrite the `<script id="foundry-state">` JSON block in
+     `foundry/dashboard.html` (mission, lights, decisions, actions, pipeline counts, sessions,
+     intel, meta) so the dashboard mirrors the updated ledgers. Touch nothing else in that file.
 4. **Persist:** `git add` the foundry files, commit with message `embassy: <date> <topic>` and push to the current branch (retry per repo conventions). Sessions are ephemeral; the repo is the brain.
 5. **Sign off** with: decisions logged (count), commitments + deadlines (list), and the single most important action before the next session.

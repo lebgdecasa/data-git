@@ -22,6 +22,7 @@ No slash command needed for normal questions — any business question boots the
 
 ```
 foundry/
+├── dashboard.html          # 🖥️ THE VISUAL DECK — open in any browser
 ├── vault/                  # Knowledge the board consults
 │   ├── hormozi/            #   Distilled doctrine (your uploaded PDFs + published frameworks)
 │   └── personal/           #   YOUR profile, goals, constraints — keep this updated
@@ -34,6 +35,15 @@ foundry/
     ├── weeks/              #   Your week plans
     └── pipeline.md         #   Prospect/client tracker
 ```
+
+## The visual deck
+
+`foundry/dashboard.html` is the cyberpunk command-center view of everything above: the round
+table with all 10 agents, mission status, decision ledger, your intel, pipeline funnel, session
+log, and the doctrine feed. Fully self-contained — open it in any browser, no server needed.
+Its data lives in an embedded `foundry-state` JSON block that the board refreshes at `/debrief`,
+so after pulling the repo it always shows current state. On mobile? Just ask the board:
+*"update the dashboard and send me a screenshot."*
 
 ## Feeding the board new knowledge
 

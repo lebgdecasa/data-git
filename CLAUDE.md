@@ -68,6 +68,7 @@ This repository serves two purposes:
 - **Session debriefs** → `foundry/embassy/sessions/YYYY-MM-DD-<topic>.md` (via `/debrief`).
 - **Weekly plans** → `foundry/ops/weeks/YYYY-Wnn.md` (via `/mh1`).
 - **Pipeline** → keep `foundry/ops/pipeline.md` current whenever prospects/clients are discussed.
+- **Visual deck** → `foundry/dashboard.html` is the owner's visual command center (self-contained HTML). When ledgers change materially, rewrite its embedded `<script id="foundry-state">` JSON block to match — never the markup. If asked to "show" it, screenshot it headlessly (`/opt/pw-browsers/*/chrome-linux/headless_shell --headless --no-sandbox --screenshot=... --window-size=1480,1560 file://...`) and send the image.
 - Commit and push embassy/ops changes at the end of a session so no intelligence is lost (sessions are ephemeral).
 
 ## SKILLS (slash commands)
